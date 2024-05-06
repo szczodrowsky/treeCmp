@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useRef } from "react";
 import styles from "./Tree.module.css";
 export function Tree() {
   const [windowWidth, setWindowWidth] = useState(0);
@@ -24,7 +23,7 @@ export function Tree() {
         value={button.value}
         name={button.name}
         onChange={(e) => setChecked(e.target.value)}
-        checked={checked === button.name}
+        checked={checked === button.value}
       />
       {button.name}
       {button.name === "Window comparison" &&
@@ -56,7 +55,7 @@ export function Tree() {
       })
       .catch((error) => console.error("Błąd:", error));
 
-    setChecked("Ref-to-all comparison");
+    setChecked("-r");
   }
   function exampleTwo() {
     fetch("/src/assets/matrix_comparison/matrix_comparison_one.txt")
@@ -66,7 +65,7 @@ export function Tree() {
       })
       .catch((error) => console.error("Błąd:", error));
 
-    setChecked("Matrix comparison");
+    setChecked("-m");
   }
   function exampleThree() {
     fetch("/src/assets/matrix_comparison/matrix_comparison_two.txt")
@@ -76,7 +75,7 @@ export function Tree() {
       })
       .catch((error) => console.error("Błąd:", error));
 
-    setChecked("Matrix comparison");
+    setChecked("-m");
   }
   function exampleFour() {
     fetch("src/assets/ref_to_all_comparison/ref_to_all_comparison_three.txt")
@@ -93,12 +92,32 @@ export function Tree() {
       })
       .catch((error) => console.error("Błąd:", error));
 
-    setChecked("Ref-to-all comparison");
+    setChecked("-r");
   }
-  const inputFile = useRef(null);
-  const fileLoad = () => {
-    inputFile.current.click();
+  const handleFileChange = (event, setTreeValue) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      const content = e.target.result;
+      if (file.type === "application/json") {
+        try {
+          const jsonData = JSON.parse(content);
+          setTreeValue(JSON.stringify(jsonData, null, 2));
+        } catch (error) {
+          console.error("Error parsing JSON:", error);
+          alert("Invalid JSON file.");
+        }
+      } else {
+        setTreeValue(content);
+      }
+    };
+
+    reader.readAsText(file);
   };
+
   return (
     <>
       <ul className={styles.list}>{radioButtons}</ul>
@@ -111,14 +130,10 @@ export function Tree() {
             <input type="text" name="file1" id="file1" placeholder="Untilted" />
             <input
               type="file"
-              id="file"
-              ref={inputFile}
-              style={{ display: "none" }}
-              placeholder="Untilted"
+              id="file1"
+              onChange={(e) => handleFileChange(e, setTreeValue1)}
             />
-            <button onClick={fileLoad}>Input file </button>
           </div>
-
           <textarea
             name="tree"
             id="tree"
@@ -131,7 +146,7 @@ export function Tree() {
             }}
           ></textarea>
         </div>
-        {checked === "Ref-to-all comparison" && (
+        {checked === "-r" && (
           <>
             <div className={styles.area}>
               <div className={styles.inputPart}>
@@ -146,12 +161,9 @@ export function Tree() {
                 />
                 <input
                   type="file"
-                  id="file"
-                  ref={inputFile}
-                  style={{ display: "none" }}
-                  placeholder="Untilted"
+                  id="file2"
+                  onChange={(e) => handleFileChange(e, setTreeValue2)}
                 />
-                <button onClick={fileLoad}>Input file </button>
               </div>
               <textarea
                 name="tree"

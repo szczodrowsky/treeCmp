@@ -1,7 +1,7 @@
 import styles from "./UnrootedMetrics.module.css";
 import { useEffect, useState } from "react";
 export function UnrootedMetrics() {
-  const [checkboxValues, setCheckboxValues] = useState([]);
+  const [checkboxName, setCheckboxName] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -26,7 +26,7 @@ export function UnrootedMetrics() {
                 {metric.name}
               </li>
             ));
-          setCheckboxValues(mappedData);
+          setCheckboxName(mappedData);
           setIsLoading(false);
         } else {
           console.error("Brak danych metrics w otrzymanym obiekcie JSON.");
@@ -46,7 +46,7 @@ export function UnrootedMetrics() {
     <>
       <div>
         <h2>Unrooted metrics</h2>
-        <ul className={styles.list}>{checkboxValues}</ul>
+        <ul className={styles.list}>{checkboxName}</ul>
       </div>
     </>
   );
