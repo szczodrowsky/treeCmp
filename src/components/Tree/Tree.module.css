@@ -1,0 +1,33 @@
+.list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 0;
+  margin-bottom: 1rem;
+}
+.areasContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.area {
+  display: flex;
+  flex-direction: column;
+}
+.inputPart {
+  display: flex;
+  flex-direction: row;
+}
+
+.examplesButtons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.button {
+  border: none;
+  background-color: white;
+  color: rgb(51, 122, 183);
+  cursor: pointer;
+}
