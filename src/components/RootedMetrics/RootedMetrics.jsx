@@ -1,7 +1,8 @@
 import styles from "./RootedMetrics.module.css";
 import { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 
-export function RootedMetrics() {
+export function RootedMetrics({ onCommandChange }) {
   const [checkboxValues, setCheckboxValues] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -9,7 +10,7 @@ export function RootedMetrics() {
     fetch("http://localhost:8080")
       .then((res) => res.json())
       .then((data) => {
-        console.log("Otrzymane dane:", data);
+        // console.log("Otrzymane dane:", data);
         if (
           data.config.defined_metrics.metric &&
           Array.isArray(data.config.defined_metrics.metric)
@@ -23,11 +24,14 @@ export function RootedMetrics() {
                   id={metric.id}
                   value={metric.command_name}
                   name={metric.name}
+                  onChange={(e) => {
+                    onCommandChange(metric.command_name, e.target.checked);
+                  }}
                 />
                 {metric.name}
               </li>
             ));
-          console.log("Mapped data:", mappedData);
+          // console.log("Mapped data:", mappedData);
           setCheckboxValues(mappedData);
           setIsLoading(false);
         } else {
@@ -51,3 +55,6 @@ export function RootedMetrics() {
     </div>
   );
 }
+RootedMetrics.propTypes = {
+  onCommandChange: PropTypes.func.isRequired,
+};

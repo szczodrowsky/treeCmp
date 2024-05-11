@@ -1,8 +1,15 @@
 import styles from "./Button.module.css";
-export function Button() {
+import PropTypes from "prop-types";
+export function Button({ onClick }) {
   return (
     <>
-      <button className={styles.button}>Compute</button>
+      <button className={styles.button} onClick={onClick}>
+        Compute
+      </button>
     </>
   );
 }
+
+Button.propTypes = {
+  onClick: PropTypes.func.isRequired, // Funkcja oczekiwana
+};
