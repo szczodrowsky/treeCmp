@@ -4,11 +4,11 @@ import { useState } from "react";
 
 export function Tree({
   checked,
-  setComandRadio,
-  treeValue1,
-  setTreeValue1,
-  treeValue2,
-  setTreeValue2,
+  setcomparisionMode,
+  newickFirstString,
+  setnewickFirstString,
+  newickSecondString,
+  setnewickSecondString,
   onInputChange,
   setPruneTrees,
   setIncludeSummary,
@@ -21,10 +21,10 @@ export function Tree({
     { name: "Matrix comparison", id: "rbMatrix", value: "-m" },
     { name: "Ref-to-all comparison", id: "rbRefToAll", value: "-r" },
   ];
-  const [inputValue, setInputValue] = useState("");
+  const [windowWidth, setwindowWidth] = useState("");
   const handleInputChange = (e) => {
     const value = e.target.value;
-    setInputValue(value);
+    setwindowWidth(value);
     onInputChange(value);
   };
   const radioButtons = radioButtonsFunctions.map((button) => (
@@ -34,7 +34,7 @@ export function Tree({
         id={button.id}
         value={button.value}
         name={button.name}
-        onChange={(e) => setComandRadio(e.target.value)}
+        onChange={(e) => setcomparisionMode(e.target.value)}
         checked={checked === button.value}
       />
       {button.name}
@@ -44,7 +44,7 @@ export function Tree({
           min="2"
           max="99"
           name="windowNumber"
-          value={inputValue}
+          value={windowWidth}
           onChange={handleInputChange}
         />
       )}
@@ -54,15 +54,15 @@ export function Tree({
   function exampleOne() {
     fetch("src/assets/compare/tree_compare_one.txt")
       .then((response) => response.text())
-      .then((data) => setTreeValue1(data.trim()))
+      .then((data) => setnewickFirstString(data.trim()))
       .catch((error) => console.error("Error:", error));
 
     fetch("src/assets/compare/tree_compare_two.txt")
       .then((response) => response.text())
-      .then((data) => setTreeValue2(data.trim()))
+      .then((data) => setnewickSecondString(data.trim()))
       .catch((error) => console.error("Error:", error));
 
-    setComandRadio("-r");
+    setcomparisionMode("-r");
     setPruneTrees(false);
     setZeroWeightsAllowed(false);
     setNormalizedDistances(false);
@@ -73,10 +73,10 @@ export function Tree({
   function exampleTwo() {
     fetch("/src/assets/matrix_comparison/matrix_comparison_one.txt")
       .then((response) => response.text())
-      .then((data) => setTreeValue1(data.trim()))
+      .then((data) => setnewickFirstString(data.trim()))
       .catch((error) => console.error("Error:", error));
 
-    setComandRadio("-m");
+    setcomparisionMode("-m");
     setNormalizedDistances(false);
     setNormalizedDistances(false);
     setIncludeSummary(false);
@@ -87,10 +87,10 @@ export function Tree({
   function exampleThree() {
     fetch("/src/assets/matrix_comparison/matrix_comparison_two.txt")
       .then((response) => response.text())
-      .then((data) => setTreeValue1(data.trim()))
+      .then((data) => setnewickFirstString(data.trim()))
       .catch((error) => console.error("Error:", error));
 
-    setComandRadio("-m");
+    setcomparisionMode("-m");
 
     setPruneTrees(false);
     setNormalizedDistances(false);
@@ -102,15 +102,15 @@ export function Tree({
   function exampleFour() {
     fetch("src/assets/ref_to_all_comparison/ref_to_all_comparison_three.txt")
       .then((response) => response.text())
-      .then((data) => setTreeValue1(data.trim()))
+      .then((data) => setnewickFirstString(data.trim()))
       .catch((error) => console.error("Error:", error));
 
     fetch("src/assets/ref_to_all_comparison/ref_to_all_comparison_four.txt")
       .then((response) => response.text())
-      .then((data) => setTreeValue2(data.trim()))
+      .then((data) => setnewickSecondString(data.trim()))
       .catch((error) => console.error("Error:", error));
 
-    setComandRadio("-r");
+    setcomparisionMode("-r");
     setZeroWeightsAllowed(false);
     setNormalizedDistances(false);
     setPruneTrees(true);
@@ -178,7 +178,7 @@ export function Tree({
             <input
               type="file"
               id="file1"
-              onChange={(e) => handleFileChange(e, setTreeValue1)}
+              onChange={(e) => handleFileChange(e, setnewickFirstString)}
             />
           </div>
           <textarea
@@ -186,10 +186,10 @@ export function Tree({
             id="tree"
             cols="30"
             rows="10"
-            placeholder={treeValue1}
-            value={treeValue1}
+            placeholder={newickFirstString}
+            value={newickFirstString}
             onChange={(e) => {
-              setTreeValue1(e.target.value);
+              setnewickFirstString(e.target.value);
             }}
           ></textarea>
         </div>
@@ -209,7 +209,7 @@ export function Tree({
                 <input
                   type="file"
                   id="file2"
-                  onChange={(e) => handleFileChange(e, setTreeValue2)}
+                  onChange={(e) => handleFileChange(e, setnewickSecondString)}
                 />
               </div>
               <textarea
@@ -217,10 +217,10 @@ export function Tree({
                 id="tree"
                 cols="30"
                 rows="10"
-                placeholder={treeValue2}
-                value={treeValue2}
+                placeholder={newickSecondString}
+                value={newickSecondString}
                 onChange={(e) => {
-                  setTreeValue2(e.target.value);
+                  setnewickSecondString(e.target.value);
                 }}
               ></textarea>
             </div>
@@ -248,11 +248,11 @@ export function Tree({
 
 Tree.propTypes = {
   checked: PropTypes.string.isRequired,
-  setComandRadio: PropTypes.func.isRequired,
-  treeValue1: PropTypes.string.isRequired,
-  setTreeValue1: PropTypes.func.isRequired,
-  treeValue2: PropTypes.string.isRequired,
-  setTreeValue2: PropTypes.func.isRequired,
+  setcomparisionMode: PropTypes.func.isRequired,
+  newickFirstString: PropTypes.string.isRequired,
+  setnewickFirstString: PropTypes.func.isRequired,
+  newickSecondString: PropTypes.string.isRequired,
+  setnewickSecondString: PropTypes.func.isRequired,
   onInputChange: PropTypes.func.isRequired,
   setPruneTrees: PropTypes.func.isRequired,
   setNormalizedDistances: PropTypes.func.isRequired,

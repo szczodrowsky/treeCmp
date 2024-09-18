@@ -7,7 +7,7 @@ export function RootedMetrics({ onCommandChange }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:8080")
+    fetch("http://localhost:5244/config")
       .then((res) => res.json())
       .then((data) => {
         // console.log("Otrzymane dane:", data);

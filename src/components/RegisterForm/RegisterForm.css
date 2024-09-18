@@ -1,0 +1,65 @@
+.register-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 400px;
+  width: 90%; /* Zapewnia responsywność na mniejszych ekranach */
+  margin: 100px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Dodaje lekki cień dla głębi */
+}
+
+.register-form h2 {
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 1.5em; /* Zwiększenie rozmiaru tekstu dla lepszej widoczności */
+  text-align: center; /* Wyrównanie tekstu do środka */
+}
+
+.register-form input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-size: 1em; /* Ujednolicenie rozmiaru tekstu w polach */
+}
+
+.register-form input:focus {
+  border-color: #17a2b8; /* Zmiana koloru obramowania przy focus */
+  outline: none; /* Usunięcie domyślnego obrysu focus */
+  box-shadow: 0 0 5px rgba(23, 162, 184, 0.5); /* Dodanie cienia dla focus */
+}
+
+.register-form button {
+  width: 100%;
+  padding: 10px;
+  font-size: 1em;
+  color: #fff;
+  background-color: #17a2b8;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease; /* Dodanie przejścia dla transform */
+}
+
+.register-form button:hover {
+  background-color: #138496;
+  transform: scale(1.02); /* Delikatne powiększenie przy hover */
+}
+
+.register-form button:active {
+  background-color: #117a8b; /* Ciemniejszy kolor przy aktywacji */
+  transform: scale(0.98); /* Delikatne zmniejszenie przy kliknięciu */
+}
+
+.error-message {
+  color: red; /* Kolor czerwony dla komunikatów o błędach */
+  margin-bottom: 15px;
+  font-size: 0.9em; /* Mniejszy rozmiar czcionki dla komunikatu */
+  text-align: center;
+}
