@@ -1,7 +1,8 @@
+import "./Footer.css"; // Stylizacja dla NewicksList
 export function Footer() {
   return (
-    <>
-      <p>Gdansk University of Technology © 2023</p>
-    </>
+    <footer className="footer">
+      <p className="footer-text">Gdańsk University of Technology © 2024</p>
+    </footer>
   );
 }

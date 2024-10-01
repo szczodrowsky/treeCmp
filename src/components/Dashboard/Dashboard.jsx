@@ -1,7 +1,9 @@
 import { Navbar } from "./Navbar/Navbar";
 import { Footer } from "./Footer/Footer";
 import { Form } from "./Form/Form";
-// import { NewicksList } from "./NewicksList/NewicksList";
+import { Routes, Route } from "react-router-dom";
+import { NewicksList } from "./NewicksList/NewicksList";
+import { OutputFiles } from "./OutputFiles/OutputFiles";
 
 import "./styles.css";
 
@@ -12,7 +14,11 @@ function Dashboard() {
         <Navbar />
       </header>
       <main>
-        <Form />
+        <Routes>
+          <Route path="/" element={<Form />} />
+          <Route path="newicks" element={<NewicksList />} />
+          <Route path="results" element={<OutputFiles />} />
+        </Routes>
       </main>
       <footer>
         <Footer />

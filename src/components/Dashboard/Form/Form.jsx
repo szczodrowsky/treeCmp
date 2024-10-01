@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import { Tree } from "./Tree/Tree.jsx";
 import { RootedMetrics } from "./RootedMetrics/RootedMetrics.jsx";
 import { UnrootedMetrics } from "./UnrootedMetrics/UnrootedMetrics.jsx";
@@ -6,23 +7,112 @@ import { Other } from "./Other/Other.jsx";
 import { Button } from "./Button/Button.jsx";
 
 export function Form() {
-  const [rootedMetrics, setRootedMetrics] = useState([]);
-  const [unrootedMetrics, setUnrootedMetrics] = useState([]);
-  const [comparisionMode, setcomparisionMode] = useState("");
-  const [newickFirstString, setnewickFirstString] = useState(
-    "Paste or drag and drop your trees in newick format separated by ;"
-  );
-  const [newickSecondString, setnewickSecondString] = useState(
-    "Paste or drag and drop your trees in newick format separated by ;"
-  );
-  const [windowWidth, setwindowWidth] = useState("");
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      // Usuwanie danych z sessionStorage przy odświeżeniu strony
+      sessionStorage.removeItem("newickData");
+    };
 
-  const [normalizedDistances, setNormalizedDistances] = useState(false);
-  const [pruneTrees, setPruneTrees] = useState(false);
-  const [includeSummary, setIncludeSummary] = useState(false);
-  const [zeroWeightsAllowed, setZeroWeightsAllowed] = useState(false);
+    window.addEventListener("beforeunload", handleBeforeUnload);
 
-  const [bifurcatingTreesOnly, setBifurcatingTreesOnly] = useState(false);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+  // Sprawdzenie, czy mamy dane w sessionStorage
+  const initialDataFromStorage = sessionStorage.getItem("newickData")
+    ? JSON.parse(sessionStorage.getItem("newickData"))
+    : null;
+
+  // Stany formularza
+  const [rootedMetrics, setRootedMetrics] = useState(
+    initialDataFromStorage?.rootedMetrics || []
+  );
+  const [unrootedMetrics, setUnrootedMetrics] = useState(
+    initialDataFromStorage?.unrootedMetrics || []
+  );
+  const [comparisionMode, setComparisionMode] = useState(
+    initialDataFromStorage?.comparisionMode || ""
+  );
+  const [newickFirstString, setNewickFirstString] = useState(
+    initialDataFromStorage?.newickFirstString ||
+      "Paste or drag and drop your trees in newick format separated by ;"
+  );
+  const [newickSecondString, setNewickSecondString] = useState(
+    initialDataFromStorage?.newickSecondString ||
+      "Paste or drag and drop your trees in newick format separated by ;"
+  );
+  const [windowWidth, setWindowWidth] = useState(
+    initialDataFromStorage?.windowWidth || ""
+  );
+
+  const [normalizedDistances, setNormalizedDistances] = useState(
+    initialDataFromStorage?.normalizedDistances || false
+  );
+  const [pruneTrees, setPruneTrees] = useState(
+    initialDataFromStorage?.pruneTrees || false
+  );
+  const [includeSummary, setIncludeSummary] = useState(
+    initialDataFromStorage?.includeSummary || false
+  );
+  const [zeroWeightsAllowed, setZeroWeightsAllowed] = useState(
+    initialDataFromStorage?.zeroWeightsAllowed || false
+  );
+  const [bifurcatingTreesOnly, setBifurcatingTreesOnly] = useState(
+    initialDataFromStorage?.bifurcatingTreesOnly || false
+  );
+
+  // Zapisujemy dane do sessionStorage przy każdej zmianie stanu formularza
+  useEffect(() => {
+    const formData = {
+      rootedMetrics,
+      unrootedMetrics,
+      comparisionMode,
+      newickFirstString,
+      newickSecondString,
+      windowWidth,
+      normalizedDistances,
+      pruneTrees,
+      includeSummary,
+      zeroWeightsAllowed,
+      bifurcatingTreesOnly,
+    };
+    sessionStorage.setItem("newickData", JSON.stringify(formData));
+  }, [
+    rootedMetrics,
+    unrootedMetrics,
+    comparisionMode,
+    newickFirstString,
+    newickSecondString,
+    windowWidth,
+    normalizedDistances,
+    pruneTrees,
+    includeSummary,
+    zeroWeightsAllowed,
+    bifurcatingTreesOnly,
+  ]);
+
+  // Funkcja do resetowania formularza
+  const resetForm = () => {
+    setRootedMetrics([]);
+    setUnrootedMetrics([]);
+    setComparisionMode("");
+    setNewickFirstString(
+      "Paste or drag and drop your trees in newick format separated by ;"
+    );
+    setNewickSecondString(
+      "Paste or drag and drop your trees in newick format separated by ;"
+    );
+    setWindowWidth("");
+    setNormalizedDistances(false);
+    setPruneTrees(false);
+    setIncludeSummary(false);
+    setZeroWeightsAllowed(false);
+    setBifurcatingTreesOnly(false);
+
+    // Usuwanie danych z sessionStorage
+    sessionStorage.removeItem("newickData");
+  };
 
   const handleOtherCheckboxChange = (optionName, value) => {
     switch (optionName) {
@@ -85,7 +175,7 @@ export function Form() {
 
     const token = localStorage.getItem("token");
 
-    const runTreeCmp = () => {
+    const runTreeCmp = (operationId) => {
       console.log("Wywoływanie endpointu /run-treecmp");
 
       const headers = {
@@ -96,7 +186,14 @@ export function Form() {
         headers.Authorization = `Bearer ${token}`;
       }
 
-      fetch("http://localhost:5244/api/Newick/run-treecmp", {
+      let url = "http://localhost:5244/api/Newick/run-treecmp";
+
+      // Jeśli mamy operationId, dodajemy go do query string
+      if (operationId) {
+        url += `?operationId=${operationId}`;
+      }
+
+      fetch(url, {
         method: "POST",
         headers: headers,
         body: JSON.stringify(Newick),
@@ -134,7 +231,8 @@ export function Form() {
         })
         .then((data) => {
           console.log("Odpowiedź z serwera po pierwszym wywołaniu:", data);
-          runTreeCmp();
+          const { operationId } = data; // Pobieramy operationId z odpowiedzi
+          runTreeCmp(operationId); // Przekazujemy operationId do wywołania run-treecmp
         })
         .catch((error) => {
           console.error(
@@ -147,7 +245,7 @@ export function Form() {
       console.log(
         "Token nie znaleziony. Wysyłanie bez tokenu do endpointu dla niezalogowanych."
       );
-      runTreeCmp();
+      runTreeCmp(); // Wywołanie bez operationId, bo użytkownik jest niezalogowany
     }
   };
 
@@ -155,20 +253,26 @@ export function Form() {
     <form onSubmit={handleSubmit}>
       <Tree
         checked={comparisionMode}
-        setcomparisionMode={setcomparisionMode}
+        setcomparisionMode={setComparisionMode}
         newickFirstString={newickFirstString}
-        setnewickFirstString={setnewickFirstString}
+        setnewickFirstString={setNewickFirstString}
         newickSecondString={newickSecondString}
-        setnewickSecondString={setnewickSecondString}
-        onInputChange={setwindowWidth}
+        setnewickSecondString={setNewickSecondString}
+        onInputChange={setWindowWidth}
         setNormalizedDistances={setNormalizedDistances}
         setPruneTrees={setPruneTrees}
         setIncludeSummary={setIncludeSummary}
         setZeroWeightsAllowed={setZeroWeightsAllowed}
         setBifurcatingTreesOnly={setBifurcatingTreesOnly}
       />
-      <RootedMetrics onCommandChange={handleRootedChange} />
-      <UnrootedMetrics onCommandChange={handleUnrootedChange} />
+      <RootedMetrics
+        metrics={rootedMetrics}
+        onCommandChange={handleRootedChange}
+      />
+      <UnrootedMetrics
+        metrics={unrootedMetrics}
+        onCommandChange={handleUnrootedChange}
+      />
       <Other
         normalizedDistances={normalizedDistances}
         pruneTrees={pruneTrees}
@@ -178,6 +282,32 @@ export function Form() {
         onOptionChange={handleOtherCheckboxChange}
       />
       <Button type="submit" onClick={handleSubmit} />
+      <button type="button" onClick={resetForm}>
+        Resetuj formularz
+      </button>{" "}
+      {/* Reset formularza */}
     </form>
   );
 }
+
+// Dodajemy walidację propsów
+Form.propTypes = {
+  initialData: PropTypes.shape({
+    comparisionMode: PropTypes.string,
+    newickFirstString: PropTypes.string,
+    newickSecondString: PropTypes.string,
+    windowWidth: PropTypes.string,
+    rootedMetrics: PropTypes.arrayOf(PropTypes.string),
+    unrootedMetrics: PropTypes.arrayOf(PropTypes.string),
+    normalizedDistances: PropTypes.bool,
+    pruneTrees: PropTypes.bool,
+    includeSummary: PropTypes.bool,
+    zeroWeightsAllowed: PropTypes.bool,
+    bifurcatingTreesOnly: PropTypes.bool,
+  }),
+};
+
+// Domyślne wartości propsów, jeśli nie są przekazane
+Form.defaultProps = {
+  initialData: null,
+};
