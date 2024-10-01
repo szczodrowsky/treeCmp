@@ -10,7 +10,6 @@ export function RootedMetrics({ onCommandChange }) {
     fetch("http://localhost:5244/config")
       .then((res) => res.json())
       .then((data) => {
-        // console.log("Otrzymane dane:", data);
         if (
           data.config.defined_metrics.metric &&
           Array.isArray(data.config.defined_metrics.metric)
@@ -31,7 +30,6 @@ export function RootedMetrics({ onCommandChange }) {
                 {metric.name}
               </li>
             ));
-          // console.log("Mapped data:", mappedData);
           setCheckboxValues(mappedData);
           setIsLoading(false);
         } else {

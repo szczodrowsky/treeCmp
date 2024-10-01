@@ -11,5 +11,5 @@ export function Button({ onClick }) {
 }
 
 Button.propTypes = {
-  onClick: PropTypes.func.isRequired, // Funkcja oczekiwana
+  onClick: PropTypes.func.isRequired,
 };

@@ -12,24 +12,23 @@ function LoginForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Wysyłamy username zamiast email
       const response = await fetch("http://localhost:5244/api/Auth/Login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username: email, password }), // Użycie klucza 'username'
+        body: JSON.stringify({ username: email, password }),
       });
       if (response.ok) {
         const data = await response.json();
-        console.log("Pełna odpowiedź z serwera:", data); // Logowanie pełnej odpowiedzi
+        console.log("Pełna odpowiedź z serwera:", data);
 
-        const token = data.jwtToken; // Użycie poprawnego klucza z odpowiedzi
+        const token = data.jwtToken;
         console.log("Token JWT z odpowiedzi:", token);
 
         if (token) {
-          localStorage.setItem("token", token); // Zapis do localStorage
-          setAuth(data.user); // Jeśli jest user, zapisujemy go
+          localStorage.setItem("token", token);
+          setAuth(data.user);
           navigate("/dashboard");
         } else {
           console.error("Token JWT nie został znaleziony w odpowiedzi.");

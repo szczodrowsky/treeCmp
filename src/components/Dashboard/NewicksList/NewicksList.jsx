@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./NewicksList.css"; // Stylizacja dla NewicksList
+import "./NewicksList.css";
 
 export function NewicksList() {
   const [newicks, setNewicks] = useState([]);
   const [error, setError] = useState(null);
   const [expandedRows, setExpandedRows] = useState({});
-  const navigate = useNavigate(); // używamy do nawigacji
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,7 +25,7 @@ export function NewicksList() {
           "http://localhost:5244/api/Newick/InputData",
           {
             method: "GET",
-            headers: headers, // Dodajemy nagłówki do zapytania
+            headers: headers,
           }
         );
 
@@ -36,7 +36,7 @@ export function NewicksList() {
         }
 
         const data = await response.json();
-        setNewicks(data); // Zakłada się, że dane są w formacie JSON i są tablicą
+        setNewicks(data);
       } catch (err) {
         setError(err.message);
         console.error("Error fetching data:", err);
@@ -54,11 +54,8 @@ export function NewicksList() {
   };
 
   const addToForm = (newick) => {
-    // Zapisujemy dane do sessionStorage
     sessionStorage.setItem("newickData", JSON.stringify(newick));
-
-    // Przekazujemy dane z listy do formularza i nawigujemy do formularza
-    navigate("/dashboard/"); // Nawigacja bez przekazywania danych przez state
+    navigate("/dashboard/");
   };
 
   if (error) {

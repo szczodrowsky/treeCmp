@@ -52,7 +52,7 @@ export function Tree({
   ));
 
   function exampleOne() {
-    fetch("src/assets/compare/tree_compare_one.txt")
+    fetch("/src/assets/compare/tree_compare_one.txt")
       .then((response) => response.text())
       .then((data) => setnewickFirstString(data.trim()))
       .catch((error) => console.error("Error:", error));
@@ -100,7 +100,7 @@ export function Tree({
   }
 
   function exampleFour() {
-    fetch("src/assets/ref_to_all_comparison/ref_to_all_comparison_three.txt")
+    fetch("/src/assets/ref_to_all_comparison/ref_to_all_comparison_three.txt")
       .then((response) => response.text())
       .then((data) => setnewickFirstString(data.trim()))
       .catch((error) => console.error("Error:", error));

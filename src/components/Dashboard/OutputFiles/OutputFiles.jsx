@@ -29,7 +29,7 @@ export function OutputFiles() {
           );
         }
         const data = await response.json();
-        console.log("Odpowiedź z backendu:", data); // Logowanie odpowiedzi z API
+        console.log("Odpowiedź z backendu:", data);
         setFilesData(data);
       } catch (err) {
         setError(err.message);
@@ -105,7 +105,6 @@ export function OutputFiles() {
                   }`}
                 >
                   {fileData.fileContent || "Brak zawartości"}{" "}
-                  {/* Wyświetla tekst lub informuje o braku danych */}
                 </div>
                 {fileData.fileContent && fileData.fileContent.length > 50 && (
                   <button

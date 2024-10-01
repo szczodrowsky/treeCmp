@@ -9,7 +9,6 @@ export function UnrootedMetrics({ onCommandChange }) {
     fetch("http://localhost:5244/config")
       .then((res) => res.json())
       .then((data) => {
-        // console.log("Otrzymane dane:", data);
         if (
           data.config.defined_metrics.metric &&
           Array.isArray(data.config.defined_metrics.metric)

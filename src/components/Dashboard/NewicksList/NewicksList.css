@@ -1,6 +1,6 @@
 .newicks-list {
-  max-width: 80%; /* Zmniejszenie szerokości kontenera */
-  margin: 50px auto; /* Centrowanie na stronie i dodanie większego marginesu u góry i na dole */
+  max-width: 80%;
+  margin: 50px auto;
   padding: 20px;
   background-color: #f5f5f5;
   border-radius: 10px;
@@ -12,33 +12,33 @@
   text-align: center;
   color: #333;
   margin-bottom: 20px;
-  font-size: 1.5em; /* Zmniejszenie rozmiaru nagłówka */
+  font-size: 1.5em;
 }
 
 .newicks-list table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed; /* Naprawienie szerokości kolumn */
+  table-layout: fixed;
 }
 
 .newicks-list th,
 .newicks-list td {
-  padding: 8px; /* Zmniejszenie paddingu dla bardziej kompaktowego wyglądu */
+  padding: 8px;
   border: 1px solid #ddd;
   text-align: left;
-  font-size: 0.85em; /* Zmniejszenie rozmiaru czcionki w komórkach */
+  font-size: 0.85em;
 }
 
 .newicks-list th {
   background-color: #3d6cec;
   color: white;
   font-weight: bold;
-  text-align: center; /* Wyrównanie nagłówków do środka */
+  text-align: center;
 }
 
 .newicks-list td {
   background-color: #fff;
-  text-align: center; /* Wyrównanie zawartości do środka */
+  text-align: center;
 }
 
 .newicks-list tr:nth-child(even) td {
@@ -46,21 +46,21 @@
 }
 
 .expandable-content {
-  max-height: 40px; /* Zmniejszenie maksymalnej wysokości dla zwiniętych elementów */
+  max-height: 40px;
   overflow: hidden;
   position: relative;
-  white-space: nowrap; /* Zawijanie tekstu w jednej linii */
-  text-overflow: ellipsis; /* Dodanie trzech kropek, aby pokazać, że tekst jest przycięty */
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .expandable-content.expanded {
   max-height: none;
-  white-space: normal; /* Normalne zawijanie tekstu po rozwinięciu */
+  white-space: normal;
 }
 
 .expand-button {
   display: block;
-  margin: 5px auto; /* Centrowanie przycisku */
+  margin: 5px auto;
   color: #3d6cec;
   cursor: pointer;
   background: none;

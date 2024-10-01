@@ -19,12 +19,11 @@ export function Navbar() {
   };
 
   const handleReturnToHome = () => {
-    navigate("/"); // Przeniesienie użytkownika na stronę główną
+    navigate("/");
   };
 
   return (
     <div className={styles.navbar}>
-      {/* Lewa strona - logo i linki */}
       <div className={`${styles.list_container} ${styles.links}`}>
         <ul className={styles.list}>
           <li>
@@ -60,7 +59,6 @@ export function Navbar() {
           )}
         </ul>
       </div>
-      {/* Prawa strona - przycisk wylogowania */}
       {isAuthenticated ? (
         <div className={`${styles.list_container} ${styles.icon}`}>
           <button onClick={handleLogout} className={styles.logoutButton}>

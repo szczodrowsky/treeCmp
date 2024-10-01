@@ -11,11 +11,10 @@ export const AuthProvider = ({ children }) => {
     if (token) {
       setAuth({ token });
     } else {
-      // Sprawdź, czy nawigacja do '/' jest wywoływana
       console.log("AuthProvider: No token, checking navigation");
-      // navigate('/'); // Odkomentowanie tego spowoduje przekierowanie zawsze na /
+      // navigate('/');
     }
-  }, []); // Usuń `navigate` z zależności, aby uniknąć pętli
+  }, []);
 
   return (
     <AuthContext.Provider value={{ auth, setAuth }}>

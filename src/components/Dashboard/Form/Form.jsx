@@ -9,7 +9,6 @@ import { Button } from "./Button/Button.jsx";
 export function Form() {
   useEffect(() => {
     const handleBeforeUnload = () => {
-      // Usuwanie danych z sessionStorage przy odświeżeniu strony
       sessionStorage.removeItem("newickData");
     };
 
@@ -19,12 +18,11 @@ export function Form() {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, []);
-  // Sprawdzenie, czy mamy dane w sessionStorage
+
   const initialDataFromStorage = sessionStorage.getItem("newickData")
     ? JSON.parse(sessionStorage.getItem("newickData"))
     : null;
 
-  // Stany formularza
   const [rootedMetrics, setRootedMetrics] = useState(
     initialDataFromStorage?.rootedMetrics || []
   );
@@ -62,7 +60,6 @@ export function Form() {
     initialDataFromStorage?.bifurcatingTreesOnly || false
   );
 
-  // Zapisujemy dane do sessionStorage przy każdej zmianie stanu formularza
   useEffect(() => {
     const formData = {
       rootedMetrics,
@@ -92,7 +89,6 @@ export function Form() {
     bifurcatingTreesOnly,
   ]);
 
-  // Funkcja do resetowania formularza
   const resetForm = () => {
     setRootedMetrics([]);
     setUnrootedMetrics([]);
@@ -188,7 +184,6 @@ export function Form() {
 
       let url = "http://localhost:5244/api/Newick/run-treecmp";
 
-      // Jeśli mamy operationId, dodajemy go do query string
       if (operationId) {
         url += `?operationId=${operationId}`;
       }
@@ -231,8 +226,8 @@ export function Form() {
         })
         .then((data) => {
           console.log("Odpowiedź z serwera po pierwszym wywołaniu:", data);
-          const { operationId } = data; // Pobieramy operationId z odpowiedzi
-          runTreeCmp(operationId); // Przekazujemy operationId do wywołania run-treecmp
+          const { operationId } = data;
+          runTreeCmp(operationId);
         })
         .catch((error) => {
           console.error(
@@ -245,7 +240,7 @@ export function Form() {
       console.log(
         "Token nie znaleziony. Wysyłanie bez tokenu do endpointu dla niezalogowanych."
       );
-      runTreeCmp(); // Wywołanie bez operationId, bo użytkownik jest niezalogowany
+      runTreeCmp();
     }
   };
 
@@ -285,12 +280,10 @@ export function Form() {
       <button type="button" onClick={resetForm}>
         Resetuj formularz
       </button>{" "}
-      {/* Reset formularza */}
     </form>
   );
 }
 
-// Dodajemy walidację propsów
 Form.propTypes = {
   initialData: PropTypes.shape({
     comparisionMode: PropTypes.string,
@@ -307,7 +300,6 @@ Form.propTypes = {
   }),
 };
 
-// Domyślne wartości propsów, jeśli nie są przekazane
 Form.defaultProps = {
   initialData: null,
 };
