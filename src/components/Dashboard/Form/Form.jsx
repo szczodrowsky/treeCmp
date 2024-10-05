@@ -106,7 +106,6 @@ export function Form() {
     setZeroWeightsAllowed(false);
     setBifurcatingTreesOnly(false);
 
-    // Usuwanie danych z sessionStorage
     sessionStorage.removeItem("newickData");
   };
 
@@ -171,6 +170,12 @@ export function Form() {
 
     const token = localStorage.getItem("token");
 
+    const openPhyloViewerInNewTab = () => {
+      sessionStorage.setItem("newickFirst", newickFirstString);
+      sessionStorage.setItem("newickSecond", newickSecondString);
+      window.open("/phylo-viewer", "_blank");
+    };
+
     const runTreeCmp = (operationId) => {
       console.log("Wywoływanie endpointu /run-treecmp");
 
@@ -199,8 +204,8 @@ export function Form() {
           }
           return response.json();
         })
-        .then((data) => {
-          console.log("Odpowiedź z serwera po wywołaniu /run-treecmp:", data);
+        .then(() => {
+          openPhyloViewerInNewTab();
         })
         .catch((error) => {
           console.error("Błąd podczas wywoływania /run-treecmp:", error);
@@ -245,42 +250,44 @@ export function Form() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Tree
-        checked={comparisionMode}
-        setcomparisionMode={setComparisionMode}
-        newickFirstString={newickFirstString}
-        setnewickFirstString={setNewickFirstString}
-        newickSecondString={newickSecondString}
-        setnewickSecondString={setNewickSecondString}
-        onInputChange={setWindowWidth}
-        setNormalizedDistances={setNormalizedDistances}
-        setPruneTrees={setPruneTrees}
-        setIncludeSummary={setIncludeSummary}
-        setZeroWeightsAllowed={setZeroWeightsAllowed}
-        setBifurcatingTreesOnly={setBifurcatingTreesOnly}
-      />
-      <RootedMetrics
-        metrics={rootedMetrics}
-        onCommandChange={handleRootedChange}
-      />
-      <UnrootedMetrics
-        metrics={unrootedMetrics}
-        onCommandChange={handleUnrootedChange}
-      />
-      <Other
-        normalizedDistances={normalizedDistances}
-        pruneTrees={pruneTrees}
-        includeSummary={includeSummary}
-        zeroWeightsAllowed={zeroWeightsAllowed}
-        bifurcatingTreesOnly={bifurcatingTreesOnly}
-        onOptionChange={handleOtherCheckboxChange}
-      />
-      <Button type="submit" onClick={handleSubmit} />
-      <button type="button" onClick={resetForm}>
-        Resetuj formularz
-      </button>{" "}
-    </form>
+    <>
+      <form onSubmit={handleSubmit}>
+        <Tree
+          checked={comparisionMode}
+          setcomparisionMode={setComparisionMode}
+          newickFirstString={newickFirstString}
+          setnewickFirstString={setNewickFirstString}
+          newickSecondString={newickSecondString}
+          setnewickSecondString={setNewickSecondString}
+          onInputChange={setWindowWidth}
+          setNormalizedDistances={setNormalizedDistances}
+          setPruneTrees={setPruneTrees}
+          setIncludeSummary={setIncludeSummary}
+          setZeroWeightsAllowed={setZeroWeightsAllowed}
+          setBifurcatingTreesOnly={setBifurcatingTreesOnly}
+        />
+        <RootedMetrics
+          metrics={rootedMetrics}
+          onCommandChange={handleRootedChange}
+        />
+        <UnrootedMetrics
+          metrics={unrootedMetrics}
+          onCommandChange={handleUnrootedChange}
+        />
+        <Other
+          normalizedDistances={normalizedDistances}
+          pruneTrees={pruneTrees}
+          includeSummary={includeSummary}
+          zeroWeightsAllowed={zeroWeightsAllowed}
+          bifurcatingTreesOnly={bifurcatingTreesOnly}
+          onOptionChange={handleOtherCheckboxChange}
+        />
+        <Button type="submit" onClick={handleSubmit} />
+        <button type="button" onClick={resetForm}>
+          Resetuj formularz
+        </button>{" "}
+      </form>
+    </>
   );
 }
 

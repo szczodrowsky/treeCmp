@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
+import { createRoot } from "react-dom/client"; // Importujemy createRoot z react-dom/client
 import "./OutputFiles.css";
+import MetricDetail from "./MetricDetail"; // Import nowego komponentu
 
 export function OutputFiles() {
   const [filesData, setFilesData] = useState([]);
   const [error, setError] = useState(null);
   const [expandedRows, setExpandedRows] = useState({});
 
+  // Fetching data from API
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -39,6 +42,16 @@ export function OutputFiles() {
     fetchData();
   }, []);
 
+  const openOutputFileInNewWindow = (fileContent) => {
+    const newWindow = window.open("", "_blank", "width=600,height=400");
+    newWindow.document.write('<div id="output-file-root"></div>');
+    newWindow.document.close();
+    const container = newWindow.document.getElementById("output-file-root");
+    const root = createRoot(container);
+    root.render(<MetricDetail fileContent={fileContent} />);
+  };
+
+  // Toggling row expansion (zwiń/rozwiń)
   const toggleRow = (index) => {
     setExpandedRows((prev) => ({
       ...prev,
@@ -58,7 +71,7 @@ export function OutputFiles() {
           <tr>
             <th>Newick First String</th>
             <th>Newick Second String</th>
-            <th>Output File</th>
+            <th>Metrics</th> {/* Kolumna Akcja */}
           </tr>
         </thead>
         <tbody>
@@ -99,24 +112,15 @@ export function OutputFiles() {
                 )}
               </td>
               <td>
-                <div
-                  className={`expandable-content ${
-                    expandedRows[index] ? "expanded" : ""
-                  }`}
-                >
-                  {fileData.fileContent || "Brak zawartości"}{" "}
-                </div>
-                {fileData.fileContent && fileData.fileContent.length > 50 && (
+                <div>
                   <button
-                    className="expand-button"
-                    onClick={() => toggleRow(index)}
-                    aria-label={`Rozwiń lub zwiń zawartość wiersza ${
-                      index + 1
-                    }`}
+                    onClick={() =>
+                      openOutputFileInNewWindow(fileData.fileContent)
+                    }
                   >
-                    {expandedRows[index] ? "Zwiń" : "Rozwiń"}
+                    Otwórz w nowym oknie
                   </button>
-                )}
+                </div>
               </td>
             </tr>
           ))}

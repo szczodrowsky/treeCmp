@@ -57,7 +57,7 @@ export function Tree({
       .then((data) => setnewickFirstString(data.trim()))
       .catch((error) => console.error("Error:", error));
 
-    fetch("src/assets/compare/tree_compare_two.txt")
+    fetch("/src/assets/compare/tree_compare_two.txt")
       .then((response) => response.text())
       .then((data) => setnewickSecondString(data.trim()))
       .catch((error) => console.error("Error:", error));
