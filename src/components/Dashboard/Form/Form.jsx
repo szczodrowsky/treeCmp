@@ -176,6 +176,11 @@ export function Form() {
       window.open("/phylo-viewer", "_blank");
     };
 
+    const openMetricsInNewTab = (fileContent) => {
+      sessionStorage.setItem("metricsContent", fileContent);
+      window.open("/metrics-viewer", "_blank");
+    };
+
     const runTreeCmp = (operationId) => {
       console.log("Wywoływanie endpointu /run-treecmp");
 
@@ -204,8 +209,9 @@ export function Form() {
           }
           return response.json();
         })
-        .then(() => {
+        .then((data) => {
           openPhyloViewerInNewTab();
+          openMetricsInNewTab(data.fileContent);
         })
         .catch((error) => {
           console.error("Błąd podczas wywoływania /run-treecmp:", error);

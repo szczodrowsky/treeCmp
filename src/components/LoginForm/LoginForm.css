@@ -34,8 +34,25 @@
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  margin-bottom: 10px; /* Dodałem odstęp między przyciskami */
 }
 
 .login-form button:hover {
   background-color: #218838;
+}
+
+.forgot-password-button {
+  width: 100%;
+  padding: 10px;
+  font-size: 1em;
+  color: #fff !important;
+  background-color: #007bff !important; /* Niebieskie tło */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.forgot-password-button:hover {
+  background-color: #0056b3 !important; /* Ciemniejszy niebieski na hover */
 }

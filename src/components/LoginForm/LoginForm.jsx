@@ -1,7 +1,7 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../../contexts/AuthContext";
-import "./LoginForm.css"; // Stylizacja formularza logowania
+import "./LoginForm.css";
 
 function LoginForm() {
   const [email, setEmail] = useState("");
@@ -14,9 +14,7 @@ function LoginForm() {
     try {
       const response = await fetch("http://localhost:5244/api/Auth/Login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: email, password }),
       });
       if (response.ok) {
@@ -42,25 +40,47 @@ function LoginForm() {
     }
   };
 
+  const handleForgotPassword = () => {
+    navigate("/forgot-password");
+  };
+
+  const handleResendConfirmation = () => {
+    navigate("/resend-confirmation"); // Przekierowanie na stronę do ponownego wysyłania e-maila potwierdzającego
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="login-form">
-      <h2>Logowanie</h2>
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Email"
-        required
-      />
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Hasło"
-        required
-      />
-      <button type="submit">Zaloguj się</button>
-    </form>
+    <div className="login-container">
+      <form onSubmit={handleSubmit} className="login-form">
+        <h2>Logowanie</h2>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email"
+          required
+        />
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Hasło"
+          required
+        />
+        <button type="submit">Zaloguj się</button>
+        <button
+          onClick={handleForgotPassword}
+          className="forgot-password-button"
+        >
+          Zapomniałem hasła
+        </button>
+        <button
+          onClick={handleResendConfirmation}
+          className="forgot-password-button"
+        >
+          Wyślij ponownie link potwierdzający
+        </button>
+      </form>
+    </div>
   );
 }
 

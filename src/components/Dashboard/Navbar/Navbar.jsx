@@ -27,11 +27,11 @@ export function Navbar() {
       <div className={`${styles.list_container} ${styles.links}`}>
         <ul className={styles.list}>
           <li>
-            <img src="src/assets/logo.png" alt="drzewko" width={50} />
+            <img src="/src/assets/logo.png" alt="drzewko" width={50} />
           </li>
           <li className={styles.item}>
             <NavLink
-              to="/dashboard/"
+              to="/dashboard"
               className={({ isActive }) => (isActive ? styles.active : "")}
             >
               Input form

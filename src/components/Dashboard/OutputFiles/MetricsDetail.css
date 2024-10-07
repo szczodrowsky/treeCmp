@@ -1,0 +1,51 @@
+.metrics-table-container {
+  max-width: 90%;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.metrics-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "Courier New", monospace;
+  table-layout: fixed;
+}
+
+.metrics-table td,
+.metrics-table th {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.metrics-table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+.metrics-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.metrics-table tr:hover {
+  background-color: #e0e0e0;
+}
+
+.metrics-table td:first-child {
+  text-align: left;
+}
+.tittle-metrics {
+  font-family: "Roboto", sans-serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #333;
+  text-align: center;
+  margin: 20px 0;
+  padding: 10px;
+  background-color: #f7f7f7;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}

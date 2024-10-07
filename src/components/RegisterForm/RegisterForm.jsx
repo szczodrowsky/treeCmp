@@ -7,6 +7,8 @@ function RegisterForm() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false); // Flaga, by zapobiec wielokrotnemu wysyłaniu formularza
   const navigate = useNavigate();
 
   const handleRegister = async (event) => {
@@ -24,6 +26,10 @@ function RegisterForm() {
       roles: ["Writter"],
     };
 
+    setIsSubmitting(true);
+    setErrorMessage("");
+    setSuccessMessage("");
+
     try {
       const response = await fetch("http://localhost:5244/api/Auth/Register", {
         method: "POST",
@@ -36,12 +42,16 @@ function RegisterForm() {
       if (response.ok) {
         const data = await response.json();
         console.log("Registration successful:", data);
-        navigate("/");
+        setSuccessMessage(
+          "Rejestracja zakończona sukcesem! Sprawdź swój e-mail, aby potwierdzić rejestrację."
+        );
+        setTimeout(() => navigate("/"), 3000); // Przekierowanie po 3 sekundach
       } else {
-        const errorText = await response.text();
-        console.error("Registration failed:", errorText);
+        const errorData = await response.json();
+        console.error("Registration failed:", errorData);
         setErrorMessage(
-          "Rejestracja nie powiodła się. Proszę spróbować ponownie."
+          errorData.message ||
+            "Rejestracja nie powiodła się. Proszę spróbować ponownie."
         );
       }
     } catch (error) {
@@ -49,6 +59,8 @@ function RegisterForm() {
       setErrorMessage(
         "Wystąpił błąd podczas rejestracji. Proszę spróbować ponownie."
       );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -77,7 +89,10 @@ function RegisterForm() {
         required
       />
       {errorMessage && <p className="error-message">{errorMessage}</p>}
-      <button type="submit">Zarejestruj się</button>
+      {successMessage && <p className="success-message">{successMessage}</p>}
+      <button type="submit" disabled={isSubmitting}>
+        {isSubmitting ? "Przetwarzanie..." : "Zarejestruj się"}
+      </button>
     </form>
   );
 }

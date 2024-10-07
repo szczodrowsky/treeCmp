@@ -22,10 +22,11 @@ const PhyloViewer = () => {
         const phylo = window.PhyloIO.init();
         const c1 = phylo.create_container(containerOneRef.current.id);
         const customSettings = {
-          name: "moje drzewo",
+          name: "Tree's",
           data_type: "newick",
           use_branch_length: true,
           collapse_level: 2,
+          show_histogram: true,
         };
         c1.add_tree(newickFirstString, customSettings);
 

@@ -1,14 +1,11 @@
 import { useEffect, useState } from "react";
-import { createRoot } from "react-dom/client"; // Importujemy createRoot z react-dom/client
 import "./OutputFiles.css";
-import MetricDetail from "./MetricDetail"; // Import nowego komponentu
 
 export function OutputFiles() {
   const [filesData, setFilesData] = useState([]);
   const [error, setError] = useState(null);
   const [expandedRows, setExpandedRows] = useState({});
 
-  // Fetching data from API
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -42,16 +39,17 @@ export function OutputFiles() {
     fetchData();
   }, []);
 
-  const openOutputFileInNewWindow = (fileContent) => {
-    const newWindow = window.open("", "_blank", "width=600,height=400");
-    newWindow.document.write('<div id="output-file-root"></div>');
-    newWindow.document.close();
-    const container = newWindow.document.getElementById("output-file-root");
-    const root = createRoot(container);
-    root.render(<MetricDetail fileContent={fileContent} />);
+  const openMetricsInNewTab = (fileContent) => {
+    sessionStorage.setItem("metricsContent", fileContent);
+    window.open("/metrics-viewer", "_blank");
   };
 
-  // Toggling row expansion (zwiń/rozwiń)
+  const openPhyloViewerInNewTab = (newickFirstString, newickSecondString) => {
+    sessionStorage.setItem("newickFirst", newickFirstString);
+    sessionStorage.setItem("newickSecond", newickSecondString);
+    window.open("/phylo-viewer", "_blank");
+  };
+
   const toggleRow = (index) => {
     setExpandedRows((prev) => ({
       ...prev,
@@ -60,7 +58,11 @@ export function OutputFiles() {
   };
 
   if (error) {
-    return <div>Błąd podczas pobierania danych: {error}</div>;
+    return <div>Loading failed{error}</div>;
+  }
+
+  if (filesData.length === 0) {
+    return <div>No records to show.</div>;
   }
 
   return (
@@ -69,9 +71,10 @@ export function OutputFiles() {
       <table>
         <thead>
           <tr>
-            <th>Newick First String</th>
-            <th>Newick Second String</th>
-            <th>Metrics</th> {/* Kolumna Akcja */}
+            <th>First Tree</th>
+            <th>Second Tree</th>
+            <th>Metrics</th>
+            <th>Show Trees</th>
           </tr>
         </thead>
         <tbody>
@@ -114,13 +117,23 @@ export function OutputFiles() {
               <td>
                 <div>
                   <button
-                    onClick={() =>
-                      openOutputFileInNewWindow(fileData.fileContent)
-                    }
+                    onClick={() => openMetricsInNewTab(fileData.fileContent)}
                   >
-                    Otwórz w nowym oknie
+                    Open
                   </button>
                 </div>
+              </td>
+              <td>
+                <button
+                  onClick={() =>
+                    openPhyloViewerInNewTab(
+                      fileData.newickFirstString,
+                      fileData.newickSecondString
+                    )
+                  }
+                >
+                  Show
+                </button>
               </td>
             </tr>
           ))}
