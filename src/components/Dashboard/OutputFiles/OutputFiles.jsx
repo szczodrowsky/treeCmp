@@ -48,7 +48,7 @@ export function OutputFiles() {
 
   return (
     <div className="operation-files-list">
-      <h2>Lista Plików Operacyjnych</h2>
+      <h2>Output list</h2>
       <table>
         <thead>
           <tr>

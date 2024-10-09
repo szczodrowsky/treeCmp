@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./LandingPage.css";
-import logo from "../../assets/logo.png"; // Ścieżka do logo
 
 function LandingPage() {
   const navigate = useNavigate();
@@ -24,7 +23,11 @@ function LandingPage() {
       <button onClick={() => navigate("/dashboard")}>
         Continue Without Logging In
       </button>
-      <img src={logo} alt="Company Logo" className="landing-page-logo" />
+      <img
+        src="/assets/logo.png"
+        alt="Company Logo"
+        className="landing-page-logo"
+      />
     </div>
   );
 }

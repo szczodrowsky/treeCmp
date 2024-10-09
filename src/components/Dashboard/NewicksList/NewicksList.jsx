@@ -36,12 +36,12 @@ export function NewicksList() {
   };
 
   if (error) {
-    return <div>Błąd podczas pobierania danych: {error}</div>;
+    return <div>Failed during fetch {error}</div>;
   }
 
   return (
     <div className="newicks-list">
-      <h2>Lista Newicks (Historia)</h2>
+      <h2>Last Operations</h2>
       <table>
         <thead>
           <tr>
@@ -108,9 +108,7 @@ export function NewicksList() {
               <td>{newick.zeroWeightsAllowed ? "Yes" : "No"}</td>
               <td>{newick.bifurcationTreesOnly ? "Yes" : "No"}</td>
               <td>
-                <button onClick={() => addToForm(newick)}>
-                  Dodaj do formularza
-                </button>
+                <button onClick={() => addToForm(newick)}>Add to form</button>
               </td>
             </tr>
           ))}

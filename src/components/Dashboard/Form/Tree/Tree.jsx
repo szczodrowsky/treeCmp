@@ -61,17 +61,32 @@ export function Tree({
     </li>
   ));
 
-  const loadExampleData = (firstFile, secondFile = null, mode, options) => {
-    fetch(firstFile)
-      .then((response) => response.text())
+  const loadExampleData = (
+    firstFilePath,
+    secondFilePath = null,
+    mode,
+    options
+  ) => {
+    fetch(`${window.location.origin}${firstFilePath}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Failed to load ${firstFilePath}`);
+        }
+        return response.text();
+      })
       .then((data) => setnewickFirstString(data.trim()))
-      .catch((error) => console.error("Error:", error));
+      .catch((error) => console.error("Error loading first file:", error));
 
-    if (secondFile) {
-      fetch(secondFile)
-        .then((response) => response.text())
+    if (secondFilePath) {
+      fetch(`${window.location.origin}${secondFilePath}`)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`Failed to load ${secondFilePath}`);
+          }
+          return response.text();
+        })
         .then((data) => setnewickSecondString(data.trim()))
-        .catch((error) => console.error("Error:", error));
+        .catch((error) => console.error("Error loading second file:", error));
     }
 
     handleComparisionModeChange(mode);
@@ -85,8 +100,8 @@ export function Tree({
 
   const exampleOne = () =>
     loadExampleData(
-      "/src/assets/compare/tree_compare_one.txt",
-      "/src/assets/compare/tree_compare_two.txt",
+      "/assets/compare/tree_compare_one.txt",
+      "/assets/compare/tree_compare_two.txt",
       "-r",
       {
         pruneTrees: false,
@@ -98,7 +113,7 @@ export function Tree({
 
   const exampleTwo = () =>
     loadExampleData(
-      "/src/assets/matrix_comparison/matrix_comparison_one.txt",
+      "/assets/matrix_comparison/matrix_comparison_one.txt",
       null,
       "-m",
       {
@@ -111,7 +126,7 @@ export function Tree({
 
   const exampleThree = () =>
     loadExampleData(
-      "/src/assets/matrix_comparison/matrix_comparison_two.txt",
+      "/assets/matrix_comparison/matrix_comparison_two.txt",
       null,
       "-m",
       {
@@ -124,8 +139,8 @@ export function Tree({
 
   const exampleFour = () =>
     loadExampleData(
-      "/src/assets/ref_to_all_comparison/ref_to_all_comparison_three.txt",
-      "src/assets/ref_to_all_comparison/ref_to_all_comparison_four.txt",
+      "/assets/ref_to_all_comparison/ref_to_all_comparison_three.txt",
+      "/assets/ref_to_all_comparison/ref_to_all_comparison_four.txt",
       "-r",
       {
         pruneTrees: true,

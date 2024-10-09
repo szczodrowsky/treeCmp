@@ -28,7 +28,8 @@ export function Navbar() {
       <div className={`${styles.list_container} ${styles.links}`}>
         <ul className={styles.list}>
           <li>
-            <img src="/src/assets/logo.png" alt="drzewko" width={50} />
+            <img src="/assets/logo.png" alt="drzewko" width={50} />{" "}
+            {/* Użycie zaimportowanego logo */}
           </li>
           <li className={styles.item}>
             <NavLink

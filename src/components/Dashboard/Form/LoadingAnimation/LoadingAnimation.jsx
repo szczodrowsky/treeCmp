@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import spinner from "../../../../assets/loading/bg-spinner.gif";
-import bgImage1 from "../../../../assets/loading/Drzewo_BW_Prussian.png";
-import bgImage2 from "../../../../assets/loading/Drzewo_BW_White.png";
-import bgImage3 from "../../../../assets/loading/Drzewo_Tq_Turqouise.png";
 import styles from "./LoadingAnimation.module.css";
 
-const images = [bgImage1, bgImage2, bgImage3];
+const images = [
+  "/assets/loading/Drzewo_BW_Prussian.png",
+  "/assets/loading/Drzewo_BW_White.png",
+  "/assets/loading/Drzewo_Tq_Turqouise.png",
+];
 
 export function LoadingAnimation() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -22,7 +22,12 @@ export function LoadingAnimation() {
       className={styles.loadingContainer}
       style={{ backgroundImage: `url(${images[currentImageIndex]})` }}
     >
-      <img src={spinner} alt="Ładowanie..." className={styles.spinner} />
+      {/* Bezpośrednia ścieżka do pliku w `public` */}
+      <img
+        src="/assets/loading/bg-spinner.gif"
+        alt="Ładowanie..."
+        className={styles.spinner}
+      />
     </div>
   );
 }
