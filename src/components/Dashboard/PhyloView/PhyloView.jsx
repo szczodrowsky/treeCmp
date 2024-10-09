@@ -4,16 +4,31 @@ const PhyloViewer = () => {
   const containerOneRef = useRef(null);
   const containerTwoRef = useRef(null);
 
-  const newickFirstString = sessionStorage.getItem("newickFirst") || "";
-  const newickSecondString = sessionStorage.getItem("newickSecond") || "";
+  let newickFirstString = sessionStorage.getItem("newickFirst") || "";
+  let newickSecondString = sessionStorage.getItem("newickSecond") || "";
 
-  const isSecondStringDefault =
+  const isSecondStringEmptyOrDefault =
+    !newickSecondString.trim() ||
     newickSecondString ===
-    "Paste or drag and drop your trees in newick format separated by ;";
+      "Paste or drag and drop your trees in newick format separated by ;";
+
+  // Log and clear second string to prevent carry-over issues
+  console.log("Newick First String:", newickFirstString);
+  console.log("Newick Second String:", newickSecondString);
+  console.log(
+    "Is Second String Empty or Default?",
+    isSecondStringEmptyOrDefault
+  );
+
+  if (isSecondStringEmptyOrDefault) {
+    console.log("Clearing Newick Second String from session storage...");
+    sessionStorage.removeItem("newickSecond");
+    newickSecondString = ""; // reset local variable as well
+  }
 
   useEffect(() => {
-    if (!newickFirstString || newickFirstString.trim() === "") {
-      console.error("Brak danych Newick dla pierwszego drzewa!");
+    if (!newickFirstString.trim()) {
+      console.error("No Newick data for the first tree!");
       return;
     }
 
@@ -30,14 +45,8 @@ const PhyloViewer = () => {
         };
         c1.add_tree(newickFirstString, customSettings);
 
-        let c2 = null;
-
-        if (
-          newickSecondString &&
-          newickSecondString.trim() !== "" &&
-          !isSecondStringDefault
-        ) {
-          c2 = phylo.create_container(containerTwoRef.current.id);
+        if (!isSecondStringEmptyOrDefault) {
+          const c2 = phylo.create_container(containerTwoRef.current.id);
           c2.add_tree(newickSecondString, customSettings);
           phylo.settings.compareMode = true;
           phylo.bound_container = [c1, c2];
@@ -47,7 +56,7 @@ const PhyloViewer = () => {
 
         phylo.start();
       } else {
-        console.error("PhyloIO nie zostało poprawnie załadowane.");
+        console.error("PhyloIO not loaded correctly.");
       }
     };
 
@@ -63,27 +72,55 @@ const PhyloViewer = () => {
       "https://cdn.jsdelivr.net/gh/DessimozLab/phylo-io@refactor/dist/phylo.js",
       onLoadPhylo
     );
-  }, [newickFirstString, newickSecondString, isSecondStringDefault]);
+
+    const hideElements = () => {
+      const elementsToHide = document.querySelectorAll(
+        ".corner_placeholder, .top, .left, .__web-inspector-hide-shortcut__"
+      );
+      elementsToHide.forEach((element) => {
+        element.style.display = "none";
+      });
+    };
+
+    hideElements();
+
+    const observer = new MutationObserver(hideElements);
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    return () => observer.disconnect();
+  }, [newickFirstString, newickSecondString, isSecondStringEmptyOrDefault]);
 
   return (
     <div
       style={{
         display: "flex",
-        justifyContent: !isSecondStringDefault ? "space-between" : "center",
+        justifyContent: !isSecondStringEmptyOrDefault
+          ? "space-between"
+          : "center",
       }}
     >
+      <style>
+        {`
+          .corner_placeholder .scale, .colorlegend_node {
+            display: none !important;
+          }
+          #menu-node {
+            display: none !important;
+          }
+        `}
+      </style>
       <div
         id="container1"
         ref={containerOneRef}
         style={{
           display: "inline-block",
-          width: !isSecondStringDefault ? "45%" : "100%",
+          width: !isSecondStringEmptyOrDefault ? "45%" : "100%",
           height: "720px",
           backgroundColor: "#fff",
           margin: "16px",
         }}
       />
-      {!isSecondStringDefault && newickSecondString.trim() !== "" && (
+      {!isSecondStringEmptyOrDefault && (
         <div
           id="container2"
           ref={containerTwoRef}

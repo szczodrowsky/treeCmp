@@ -1,19 +1,19 @@
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axiosInstance from "../services/axiosInstance";
 
 const useAxiosInterceptor = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const requestInterceptor = axios.interceptors.response.use(
+    const responseInterceptor = axiosInstance.interceptors.response.use(
       (response) => response,
       (error) => {
         if (error.response) {
           switch (error.response.status) {
             case 401:
               localStorage.removeItem("token");
-              navigate("/startPage");
+              navigate("/");
               break;
             case 403:
               alert("Brak uprawnień do tego zasobu.");
@@ -36,7 +36,7 @@ const useAxiosInterceptor = () => {
     );
 
     return () => {
-      axios.interceptors.response.eject(requestInterceptor);
+      axiosInstance.interceptors.response.eject(responseInterceptor);
     };
   }, [navigate]);
 };

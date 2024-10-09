@@ -1,17 +1,19 @@
 .metrics-table-container {
-  max-width: 90%;
+  max-width: 100%;
   margin: 0 auto;
   padding: 20px;
   background-color: #f9f9f9;
   border-radius: 10px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
 }
 
 .metrics-table {
   width: 100%;
   border-collapse: collapse;
   font-family: "Courier New", monospace;
-  table-layout: fixed;
+  table-layout: auto;
+  min-width: 1200px;
 }
 
 .metrics-table td,
@@ -19,11 +21,14 @@
   border: 1px solid #ddd;
   padding: 8px;
   text-align: center;
+  word-wrap: break-word;
+  white-space: normal;
 }
 
 .metrics-table th {
   background-color: #f4f4f4;
   font-weight: bold;
+  font-size: 1rem;
 }
 
 .metrics-table tr:nth-child(even) {
@@ -34,9 +39,6 @@
   background-color: #e0e0e0;
 }
 
-.metrics-table td:first-child {
-  text-align: left;
-}
 .tittle-metrics {
   font-family: "Roboto", sans-serif;
   font-size: 2.5rem;
@@ -48,4 +50,21 @@
   background-color: #f7f7f7;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+  .metrics-table-container {
+    padding: 10px;
+  }
+
+  .metrics-table th,
+  .metrics-table td {
+    font-size: 0.9rem;
+    padding: 6px;
+  }
+
+  .tittle-metrics {
+    font-size: 1.8rem;
+    padding: 8px;
+  }
 }

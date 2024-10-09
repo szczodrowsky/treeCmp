@@ -1,5 +1,6 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import AuthContext from "../../contexts/AuthContext";
 import "./LoginForm.css";
 
@@ -10,33 +11,37 @@ function LoginForm() {
   const { setAuth } = useContext(AuthContext);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Zatrzymuje domyślne odświeżenie formularza
     try {
-      const response = await fetch("http://localhost:5244/api/Auth/Login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: email, password }),
-      });
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Pełna odpowiedź z serwera:", data);
-
-        const token = data.jwtToken;
-        console.log("Token JWT z odpowiedzi:", token);
-
-        if (token) {
-          localStorage.setItem("token", token);
-          setAuth(data.user);
-          navigate("/dashboard");
-        } else {
-          console.error("Token JWT nie został znaleziony w odpowiedzi.");
-          alert("Token JWT nie został znaleziony. Proszę spróbować ponownie.");
+      const response = await axios.post(
+        "http://localhost:5244/api/Auth/Login",
+        {
+          username: email,
+          password,
+        },
+        {
+          headers: { "Content-Type": "application/json" },
         }
+      );
+
+      // Odbieramy dane z serwera
+      const data = response.data;
+      console.log("Full server response:", data);
+
+      const token = data.jwtToken;
+      console.log("JWT token from response:", token);
+
+      if (token) {
+        localStorage.setItem("token", token);
+        setAuth(data.user); // Ustawia stan autoryzacji bez przeładowania
+        navigate("/dashboard"); // Przekierowanie do dashboardu
       } else {
-        alert("Błędne dane logowania");
+        console.error("JWT token not found in response.");
+        alert("JWT token not found. Please try again.");
       }
     } catch (error) {
-      console.error("Błąd logowania:", error);
+      console.error("Login error:", error);
+      alert("Invalid login credentials.");
     }
   };
 
@@ -45,13 +50,17 @@ function LoginForm() {
   };
 
   const handleResendConfirmation = () => {
-    navigate("/resend-confirmation"); // Przekierowanie na stronę do ponownego wysyłania e-maila potwierdzającego
+    navigate("/resend-confirmation");
+  };
+
+  const handleRegister = () => {
+    navigate("/register");
   };
 
   return (
     <div className="login-container">
       <form onSubmit={handleSubmit} className="login-form">
-        <h2>Logowanie</h2>
+        <h2>Login</h2>
         <input
           type="email"
           value={email}
@@ -63,21 +72,30 @@ function LoginForm() {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="Hasło"
+          placeholder="Password"
           required
         />
-        <button type="submit">Zaloguj się</button>
+        <button type="submit">Log In</button>
         <button
+          type="button"
           onClick={handleForgotPassword}
           className="forgot-password-button"
         >
-          Zapomniałem hasła
+          Forgot Password
         </button>
         <button
+          type="button"
           onClick={handleResendConfirmation}
           className="forgot-password-button"
         >
-          Wyślij ponownie link potwierdzający
+          Resend Confirmation Link
+        </button>
+        <button
+          type="button"
+          onClick={handleRegister}
+          className="forgot-password-button"
+        >
+          Register as New User
         </button>
       </form>
     </div>

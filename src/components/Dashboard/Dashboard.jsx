@@ -5,8 +5,6 @@ import { Routes, Route } from "react-router-dom";
 import { NewicksList } from "./NewicksList/NewicksList";
 import { OutputFiles } from "./OutputFiles/OutputFiles";
 
-import "./styles.css";
-
 function Dashboard() {
   return (
     <>

@@ -1,0 +1,24 @@
+.errorMessageContainer {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  max-width: 640px;
+  margin: 1rem auto;
+}
+
+.errorMessageWrapper {
+  background-color: #ffdddd;
+  padding: 1rem;
+  border-radius: 5px;
+  font-size: 1rem;
+  color: #d8000c;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.errorMessageIcon {
+  color: #d8000c;
+}

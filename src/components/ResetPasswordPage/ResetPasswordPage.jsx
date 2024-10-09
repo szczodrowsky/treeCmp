@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import axiosInstance from "../../services/axiosInstance";
 import "./ResetPasswordPage.css";
 
 function ResetPasswordPage() {
@@ -17,29 +18,19 @@ function ResetPasswordPage() {
     }
 
     try {
-      const response = await fetch(
-        "http://localhost:5244/api/Auth/ResetPassword",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId, token, newPassword }),
-        }
-      );
+      const response = await axiosInstance.post("/Auth/ResetPassword", {
+        userId,
+        token,
+        newPassword,
+      });
 
-      if (response.ok) {
-        const data = await response.json();
-        setStatusMessage(data.message);
-        setTimeout(() => navigate("/login"), 3000);
-      } else {
-        const errorData = await response.json();
-        console.error("Szczegóły błędu:", errorData);
-        setStatusMessage(
-          errorData.message || "Resetowanie hasła nie powiodło się."
-        );
-      }
+      setStatusMessage(response.data.message);
+      setTimeout(() => navigate("/login"), 3000);
     } catch (error) {
-      console.error("Błąd połączenia:", error);
-      setStatusMessage("Błąd połączenia. Spróbuj ponownie.");
+      const errorMessage =
+        error.response?.data?.message || "Resetowanie hasła nie powiodło się.";
+      console.error("Szczegóły błędu:", error);
+      setStatusMessage(errorMessage);
     }
   };
 

@@ -1,3 +1,42 @@
+:root {
+  --primary-color: #337ab7;
+  --hover-color: #286090;
+  --text-color: #fff;
+  --border-radius: 8px;
+  --padding: 0.75rem 1.5rem;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
 .button {
-  margin: 2rem 0rem;
+  font-family: "Roboto", sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-color);
+  background-color: var(--primary-color);
+  border: none;
+  border-radius: var(--border-radius);
+  padding: var(--padding);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
+  width: 100%;
+  max-width: 300px;
+}
+
+.button:hover {
+  background-color: var(--hover-color);
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+.button:active {
+  transform: translateY(1px);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
 }

@@ -1,5 +1,6 @@
 import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
+import "./ConfirmationSentPage.css";
 
 function ConfirmationSentPage() {
   const location = useLocation();
@@ -12,18 +13,18 @@ function ConfirmationSentPage() {
   useEffect(() => {
     if (status === "success") {
       setStatusMessage(
-        `Link potwierdzający został wysłany na adres: ${email}. Sprawdź swoją skrzynkę pocztową.`
+        `The confirmation link was sent to: ${email}.Check your mailbox.`
       );
     } else {
       setStatusMessage(
-        "Wystąpił problem podczas wysyłania e-maila potwierdzającego. Spróbuj ponownie później."
+        "There was a problem sending the confirmation e-mail. Please try again later."
       );
     }
   }, [email, status]);
 
   return (
     <div style={{ textAlign: "center", padding: "20px" }}>
-      <h2>{status === "success" ? "Sukces!" : "Błąd"}</h2>
+      <h2>{status === "success" ? "Success!" : "Error"}</h2>
       <p style={{ color: status === "success" ? "green" : "red" }}>
         {statusMessage}
       </p>

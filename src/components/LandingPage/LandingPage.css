@@ -1,31 +1,74 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap");
+
 .landing-page {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  background-color: #f0f2f5;
+  min-height: 100vh;
+  background: linear-gradient(to right, #6a11cb, #2575fc);
+  color: #ffffff;
+  font-family: "Roboto", sans-serif;
   text-align: center;
+  padding: 20px;
 }
 
-.landing-page h1 {
-  margin-bottom: 20px;
-  font-size: 2.5em;
-  color: #333;
+h1 {
+  font-size: 36px;
+  margin-bottom: 30px;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
 }
 
-.landing-page button {
-  margin: 10px;
-  padding: 15px 30px;
-  font-size: 1em;
-  color: #fff;
-  background-color: #007bff;
+button {
+  font-size: 16px;
+  padding: 12px 24px;
+  margin: 10px 0;
+  color: #ffffff;
+  background-color: #3b5998;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s, transform 0.3s;
 }
 
-.landing-page button:hover {
-  background-color: #0056b3;
+button:hover {
+  background-color: #2e437a;
+  transform: translateY(-3px);
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+.landing-page-logo {
+  margin-top: 30px;
+  width: 120px;
+  height: auto;
+  opacity: 0.9;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.landing-page-logo:hover {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .landing-page {
+    padding: 15px;
+  }
+
+  h1 {
+    font-size: 28px;
+  }
+
+  button {
+    font-size: 15px;
+    padding: 10px 20px;
+  }
+
+  .landing-page-logo {
+    width: 100px;
+  }
 }

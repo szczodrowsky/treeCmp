@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import axiosInstance from "../../../services/axiosInstance";
 import "./OutputFiles.css";
 
 export function OutputFiles() {
@@ -9,28 +10,8 @@ export function OutputFiles() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const headers = {
-          "Content-Type": "application/json",
-        };
-        if (token) {
-          headers.Authorization = `Bearer ${token}`;
-        }
-        const response = await fetch(
-          "http://localhost:5244/api/Newick/combined-newick",
-          {
-            method: "GET",
-            headers: headers,
-          }
-        );
-        if (!response.ok) {
-          throw new Error(
-            `Failed to fetch data: ${response.status} ${response.statusText}`
-          );
-        }
-        const data = await response.json();
-        console.log("Odpowiedź z backendu:", data);
-        setFilesData(data);
+        const response = await axiosInstance.get("/Newick/combined-newick");
+        setFilesData(response.data);
       } catch (err) {
         setError(err.message);
         console.error("Error fetching data:", err);
@@ -58,7 +39,7 @@ export function OutputFiles() {
   };
 
   if (error) {
-    return <div>Loading failed{error}</div>;
+    return <div>Loading failed: {error}</div>;
   }
 
   if (filesData.length === 0) {
@@ -71,6 +52,7 @@ export function OutputFiles() {
       <table>
         <thead>
           <tr>
+            <th>Data</th>
             <th>First Tree</th>
             <th>Second Tree</th>
             <th>Metrics</th>
@@ -80,6 +62,9 @@ export function OutputFiles() {
         <tbody>
           {filesData.map((fileData, index) => (
             <tr key={index}>
+              <td>
+                {new Date(fileData.fileGeneratedTimestamp).toLocaleString()}
+              </td>
               <td>
                 <div
                   className={`expandable-content ${

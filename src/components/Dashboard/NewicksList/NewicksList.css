@@ -1,11 +1,12 @@
 .newicks-list {
-  max-width: 80%;
+  max-width: 100%;
   margin: 50px auto;
   padding: 20px;
   background-color: #f5f5f5;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   font-family: Arial, sans-serif;
+  overflow-x: auto;
 }
 
 .newicks-list h2 {
@@ -18,14 +19,15 @@
 .newicks-list table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed;
+  table-layout: auto;
+  min-width: 1200px;
 }
 
 .newicks-list th,
 .newicks-list td {
   padding: 8px;
   border: 1px solid #ddd;
-  text-align: left;
+  text-align: center;
   font-size: 0.85em;
 }
 
@@ -76,4 +78,24 @@
 
 .expandable-content.expanded + .expand-button {
   color: #c0392b;
+}
+
+@media (max-width: 768px) {
+  .newicks-list {
+    padding: 10px;
+  }
+
+  .newicks-list table {
+    min-width: 600px;
+  }
+
+  .newicks-list th,
+  .newicks-list td {
+    font-size: 0.75em;
+    padding: 6px;
+  }
+
+  .expand-button {
+    font-size: 0.7em;
+  }
 }

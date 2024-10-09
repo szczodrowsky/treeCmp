@@ -21,20 +21,30 @@ export function Tree({
     { name: "Matrix comparison", id: "rbMatrix", value: "-m" },
     { name: "Ref-to-all comparison", id: "rbRefToAll", value: "-r" },
   ];
+
   const [windowWidth, setwindowWidth] = useState("");
+
   const handleInputChange = (e) => {
     const value = e.target.value;
     setwindowWidth(value);
     onInputChange(value);
   };
+
+  const handleComparisionModeChange = (value) => {
+    setcomparisionMode(value);
+    if (value !== "-r") {
+      setnewickSecondString("");
+    }
+  };
+
   const radioButtons = radioButtonsFunctions.map((button) => (
     <li key={button.id}>
       <input
         type="radio"
         id={button.id}
         value={button.value}
-        name={button.name}
-        onChange={(e) => setcomparisionMode(e.target.value)}
+        name="comparisonMode"
+        onChange={(e) => handleComparisionModeChange(e.target.value)}
         checked={checked === button.value}
       />
       {button.name}
@@ -51,88 +61,84 @@ export function Tree({
     </li>
   ));
 
-  function exampleOne() {
-    fetch("/src/assets/compare/tree_compare_one.txt")
+  const loadExampleData = (firstFile, secondFile = null, mode, options) => {
+    fetch(firstFile)
       .then((response) => response.text())
       .then((data) => setnewickFirstString(data.trim()))
       .catch((error) => console.error("Error:", error));
 
-    fetch("/src/assets/compare/tree_compare_two.txt")
-      .then((response) => response.text())
-      .then((data) => setnewickSecondString(data.trim()))
-      .catch((error) => console.error("Error:", error));
+    if (secondFile) {
+      fetch(secondFile)
+        .then((response) => response.text())
+        .then((data) => setnewickSecondString(data.trim()))
+        .catch((error) => console.error("Error:", error));
+    }
 
-    setcomparisionMode("-r");
-    setPruneTrees(false);
-    setZeroWeightsAllowed(false);
-    setNormalizedDistances(false);
-    setNormalizedDistances(true);
-    setIncludeSummary(true);
-  }
+    handleComparisionModeChange(mode);
+    Object.entries(options).forEach(([key, value]) => {
+      if (key === "pruneTrees") setPruneTrees(value);
+      if (key === "zeroWeightsAllowed") setZeroWeightsAllowed(value);
+      if (key === "normalizedDistances") setNormalizedDistances(value);
+      if (key === "includeSummary") setIncludeSummary(value);
+    });
+  };
 
-  function exampleTwo() {
-    fetch("/src/assets/matrix_comparison/matrix_comparison_one.txt")
-      .then((response) => response.text())
-      .then((data) => setnewickFirstString(data.trim()))
-      .catch((error) => console.error("Error:", error));
+  const exampleOne = () =>
+    loadExampleData(
+      "/src/assets/compare/tree_compare_one.txt",
+      "/src/assets/compare/tree_compare_two.txt",
+      "-r",
+      {
+        pruneTrees: false,
+        zeroWeightsAllowed: false,
+        normalizedDistances: false,
+        includeSummary: true,
+      }
+    );
 
-    setcomparisionMode("-m");
-    setNormalizedDistances(false);
-    setNormalizedDistances(false);
-    setIncludeSummary(false);
-    setPruneTrees(true);
-    setZeroWeightsAllowed(true);
-  }
+  const exampleTwo = () =>
+    loadExampleData(
+      "/src/assets/matrix_comparison/matrix_comparison_one.txt",
+      null,
+      "-m",
+      {
+        pruneTrees: true,
+        zeroWeightsAllowed: true,
+        normalizedDistances: false,
+        includeSummary: false,
+      }
+    );
 
-  function exampleThree() {
-    fetch("/src/assets/matrix_comparison/matrix_comparison_two.txt")
-      .then((response) => response.text())
-      .then((data) => setnewickFirstString(data.trim()))
-      .catch((error) => console.error("Error:", error));
+  const exampleThree = () =>
+    loadExampleData(
+      "/src/assets/matrix_comparison/matrix_comparison_two.txt",
+      null,
+      "-m",
+      {
+        pruneTrees: false,
+        zeroWeightsAllowed: true,
+        normalizedDistances: true,
+        includeSummary: false,
+      }
+    );
 
-    setcomparisionMode("-m");
+  const exampleFour = () =>
+    loadExampleData(
+      "/src/assets/ref_to_all_comparison/ref_to_all_comparison_three.txt",
+      "src/assets/ref_to_all_comparison/ref_to_all_comparison_four.txt",
+      "-r",
+      {
+        pruneTrees: true,
+        zeroWeightsAllowed: false,
+        normalizedDistances: false,
+        includeSummary: true,
+      }
+    );
 
-    setPruneTrees(false);
-    setNormalizedDistances(false);
-    setNormalizedDistances(true);
-    setIncludeSummary(false);
-    setZeroWeightsAllowed(true);
-  }
-
-  function exampleFour() {
-    fetch("/src/assets/ref_to_all_comparison/ref_to_all_comparison_three.txt")
-      .then((response) => response.text())
-      .then((data) => setnewickFirstString(data.trim()))
-      .catch((error) => console.error("Error:", error));
-
-    fetch("src/assets/ref_to_all_comparison/ref_to_all_comparison_four.txt")
-      .then((response) => response.text())
-      .then((data) => setnewickSecondString(data.trim()))
-      .catch((error) => console.error("Error:", error));
-
-    setcomparisionMode("-r");
-    setZeroWeightsAllowed(false);
-    setNormalizedDistances(false);
-    setPruneTrees(true);
-    setIncludeSummary(true);
-    setZeroWeightsAllowed(true);
-  }
   const handleFileChange = (event, setTreeValue) => {
     const file = event.target.files[0];
     if (!file) return;
-    const allowedExtensions = [
-      "txt",
-      "nex",
-      "nxs",
-      "nh",
-      "nhx",
-      "nwk",
-      "newick",
-      "tre",
-      "tree",
-      "trees",
-      "json",
-    ];
+    const allowedExtensions = ["newick", "json"];
 
     const fileExtension = file.name.split(".").pop().toLowerCase();
 
@@ -167,14 +173,21 @@ export function Tree({
 
   return (
     <>
-      <ul className={styles.list}>{radioButtons}</ul>
+      <h2 className={styles.comparisonModeTitle}>Comparison Mode</h2>
+      <div className={styles.radioContainer}>
+        <ul className={styles.list}>{radioButtons}</ul>
+      </div>
       <div className={styles.areasContainer}>
-        <div className={styles.area}>
+        <div
+          className={`${styles.area} ${
+            checked !== "-r" ? styles["single-area"] : ""
+          }`}
+        >
           <div className={styles.inputPart}>
-            <label htmlFor="file">
+            <label htmlFor="file1">
               <strong>Newick trees: </strong>
             </label>
-            <input type="text" name="file1" id="file1" placeholder="Untilted" />
+            <input type="text" name="file1" id="file1" placeholder="Untitled" />
             <input
               type="file"
               id="file1"
@@ -182,49 +195,43 @@ export function Tree({
             />
           </div>
           <textarea
-            name="tree"
-            id="tree"
+            name="tree1"
+            id="tree1"
             cols="30"
             rows="10"
-            placeholder={newickFirstString}
+            placeholder="Paste or drag Newick tree"
             value={newickFirstString}
-            onChange={(e) => {
-              setnewickFirstString(e.target.value);
-            }}
+            onChange={(e) => setnewickFirstString(e.target.value)}
           ></textarea>
         </div>
         {checked === "-r" && (
-          <>
-            <div className={styles.area}>
-              <div className={styles.inputPart}>
-                <label htmlFor="file">
-                  <strong>Newick trees: </strong>
-                </label>
-                <input
-                  type="text"
-                  name="file2"
-                  id="file2"
-                  placeholder="Untilted"
-                />
-                <input
-                  type="file"
-                  id="file2"
-                  onChange={(e) => handleFileChange(e, setnewickSecondString)}
-                />
-              </div>
-              <textarea
-                name="tree"
-                id="tree"
-                cols="30"
-                rows="10"
-                placeholder={newickSecondString}
-                value={newickSecondString}
-                onChange={(e) => {
-                  setnewickSecondString(e.target.value);
-                }}
-              ></textarea>
+          <div className={styles.area}>
+            <div className={styles.inputPart}>
+              <label htmlFor="file2">
+                <strong>Newick trees: </strong>
+              </label>
+              <input
+                type="text"
+                name="file2"
+                id="file2"
+                placeholder="Untitled"
+              />
+              <input
+                type="file"
+                id="file2"
+                onChange={(e) => handleFileChange(e, setnewickSecondString)}
+              />
             </div>
-          </>
+            <textarea
+              name="tree2"
+              id="tree2"
+              cols="30"
+              rows="10"
+              placeholder="Paste or drag Newick tree"
+              value={newickSecondString}
+              onChange={(e) => setnewickSecondString(e.target.value)}
+            ></textarea>
+          </div>
         )}
       </div>
       <div className={styles.examplesButtons}>
@@ -259,3 +266,5 @@ Tree.propTypes = {
   setIncludeSummary: PropTypes.func.isRequired,
   setZeroWeightsAllowed: PropTypes.func.isRequired,
 };
+
+export default Tree;

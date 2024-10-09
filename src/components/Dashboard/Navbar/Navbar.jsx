@@ -19,6 +19,7 @@ export function Navbar() {
   };
 
   const handleReturnToHome = () => {
+    sessionStorage.clear();
     navigate("/");
   };
 

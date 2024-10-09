@@ -5,15 +5,14 @@ const MetricsDetail = () => {
   const [decodedContent, setDecodedContent] = useState("");
 
   useEffect(() => {
-    const content = sessionStorage.getItem("metricsContent"); // Pobieranie danych z sessionStorage
+    const content = sessionStorage.getItem("metricsContent");
     setDecodedContent(content ? atob(content) : "Brak zawartości");
   }, []);
 
-  // Funkcja do parsowania danych na podstawie separatorów
   const parseContentToTable = (content) => {
     const rows = content.trim().split("\n");
     return rows.map((row, rowIndex) => {
-      const columns = row.trim().split(/\s+/); // Rozdzielanie danych na podstawie spacji lub tabulatorów
+      const columns = row.trim().split(/\s+/);
       return (
         <tr key={rowIndex}>
           {columns.map((column, colIndex) => (

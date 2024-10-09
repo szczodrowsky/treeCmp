@@ -1,4 +1,5 @@
 import { useState } from "react";
+import axiosInstance from "../../services/axiosInstance";
 import "./ResendConfirmationPage.css";
 
 function ResendConfirmationPage() {
@@ -12,26 +13,17 @@ function ResendConfirmationPage() {
     setStatusMessage("");
 
     try {
-      const response = await fetch(
-        "http://localhost:5244/api/Auth/ResendConfirmation",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }),
-        }
-      );
+      const response = await axiosInstance.post("/Auth/ResendConfirmation", {
+        email,
+      });
 
-      if (response.ok) {
-        const data = await response.json();
-        setStatusMessage(data.message || "Link potwierdzający został wysłany.");
-      } else {
-        const errorData = await response.json();
-        setStatusMessage(
-          errorData.message || "Wystąpił problem. Spróbuj ponownie."
-        );
-      }
+      setStatusMessage(
+        response.data.message || "Link potwierdzający został wysłany."
+      );
     } catch (error) {
-      setStatusMessage("Błąd połączenia. Spróbuj ponownie.");
+      const errorMessage =
+        error.response?.data?.message || "Wystąpił problem. Spróbuj ponownie.";
+      setStatusMessage(errorMessage);
     } finally {
       setIsLoading(false);
     }

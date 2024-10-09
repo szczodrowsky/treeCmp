@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./LandingPage.css";
+import logo from "../../assets/logo.png"; // Ścieżka do logo
 
 function LandingPage() {
   const navigate = useNavigate();
@@ -17,12 +18,13 @@ function LandingPage() {
 
   return (
     <div className="landing-page">
-      <h1>Witaj na naszej stronie!</h1>
-      <button onClick={handleLogin}>Zaloguj się</button>
-      <button onClick={() => navigate("/register")}>Zarejestruj się</button>
+      <h1>TreeCmp</h1>
+      <button onClick={handleLogin}>Log In</button>
+      <button onClick={() => navigate("/register")}>Sign Up</button>
       <button onClick={() => navigate("/dashboard")}>
-        Kontynuuj bez logowania
+        Continue Without Logging In
       </button>
+      <img src={logo} alt="Company Logo" className="landing-page-logo" />
     </div>
   );
 }

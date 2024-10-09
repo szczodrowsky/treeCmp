@@ -1,4 +1,5 @@
 import { useState } from "react";
+import axiosInstance from "../../services/axiosInstance";
 import "./ForgotPasswordPage.css";
 
 function ForgotPasswordPage() {
@@ -9,47 +10,45 @@ function ForgotPasswordPage() {
     event.preventDefault();
 
     try {
-      const response = await fetch(
-        "http://localhost:5244/api/Auth/ForgotPassword",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }),
-        }
+      const response = await axiosInstance.post("/Auth/ForgotPassword", {
+        email,
+      });
+      setStatusMessage(
+        response.data.message || "Link do resetu hasła został wysłany."
       );
-
-      if (response.ok) {
-        const data = await response.json();
-        setStatusMessage(data.message);
-      } else {
-        const errorData = await response.json();
-        setStatusMessage(errorData.message || "Request failed. Try again.");
-      }
     } catch (error) {
-      setStatusMessage("Error sending request. Try again.");
+      if (error.response && error.response.data) {
+        setStatusMessage(
+          error.response.data.message ||
+            "Wystąpił problem z wysyłaniem zapytania. Spróbuj ponownie."
+        );
+      } else {
+        setStatusMessage("Błąd połączenia. Spróbuj ponownie.");
+      }
+      console.error("Błąd wysyłania zapytania:", error);
     }
   };
 
   return (
     <div className="forgot-password-container">
-      <h2>Resetowanie hasła</h2>
+      <h2>Password reset</h2>
       <form onSubmit={handleForgotPassword} className="forgot-password-form">
         <input
           type="email"
-          placeholder="Twój e-mail"
+          placeholder="Your e-mail"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
           className="forgot-password-input"
         />
         <button type="submit" className="forgot-password-button">
-          Wyślij link do resetu hasła
+          Send link to reset password
         </button>
       </form>
       {statusMessage && (
         <p
           className={`status-message ${
-            statusMessage.includes("failed") || statusMessage.includes("Error")
+            statusMessage.includes("problem") || statusMessage.includes("Błąd")
               ? "error"
               : "success"
           }`}

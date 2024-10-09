@@ -5,15 +5,17 @@ import { RootedMetrics } from "./RootedMetrics/RootedMetrics.jsx";
 import { UnrootedMetrics } from "./UnrootedMetrics/UnrootedMetrics.jsx";
 import { Other } from "./Other/Other.jsx";
 import { Button } from "./Button/Button.jsx";
+import { LoadingAnimation } from "./LoadingAnimation/LoadingAnimation";
+import axiosInstance from "../../../services/axiosInstance";
+import styles from "./Form.module.css";
+import { ErrorMessage } from "./ErrorMessage/ErrorMessage.jsx";
 
 export function Form() {
   useEffect(() => {
     const handleBeforeUnload = () => {
       sessionStorage.removeItem("newickData");
     };
-
     window.addEventListener("beforeunload", handleBeforeUnload);
-
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
@@ -29,6 +31,10 @@ export function Form() {
   const [unrootedMetrics, setUnrootedMetrics] = useState(
     initialDataFromStorage?.unrootedMetrics || []
   );
+  const [isRooted, setIsRooted] = useState(false);
+  const [isUnrooted, setIsUnrooted] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const [comparisionMode, setComparisionMode] = useState(
     initialDataFromStorage?.comparisionMode || ""
   );
@@ -43,7 +49,6 @@ export function Form() {
   const [windowWidth, setWindowWidth] = useState(
     initialDataFromStorage?.windowWidth || ""
   );
-
   const [normalizedDistances, setNormalizedDistances] = useState(
     initialDataFromStorage?.normalizedDistances || false
   );
@@ -89,26 +94,6 @@ export function Form() {
     bifurcatingTreesOnly,
   ]);
 
-  const resetForm = () => {
-    setRootedMetrics([]);
-    setUnrootedMetrics([]);
-    setComparisionMode("");
-    setNewickFirstString(
-      "Paste or drag and drop your trees in newick format separated by ;"
-    );
-    setNewickSecondString(
-      "Paste or drag and drop your trees in newick format separated by ;"
-    );
-    setWindowWidth("");
-    setNormalizedDistances(false);
-    setPruneTrees(false);
-    setIncludeSummary(false);
-    setZeroWeightsAllowed(false);
-    setBifurcatingTreesOnly(false);
-
-    sessionStorage.removeItem("newickData");
-  };
-
   const handleOtherCheckboxChange = (optionName, value) => {
     switch (optionName) {
       case "normalizedDistances":
@@ -133,26 +118,33 @@ export function Form() {
 
   const handleRootedChange = (commandName, isChecked) => {
     setRootedMetrics((prev) => {
-      if (isChecked) {
-        return [...prev, commandName];
-      } else {
-        return prev.filter((name) => name !== commandName);
-      }
+      const newRootedMetrics = isChecked
+        ? [...prev, commandName]
+        : prev.filter((name) => name !== commandName);
+      setIsRooted(newRootedMetrics.length > 0);
+      return newRootedMetrics;
     });
   };
 
   const handleUnrootedChange = (commandName, isChecked) => {
     setUnrootedMetrics((prev) => {
-      if (isChecked) {
-        return [...prev, commandName];
-      } else {
-        return prev.filter((name) => name !== commandName);
-      }
+      const newUnrootedMetrics = isChecked
+        ? [...prev, commandName]
+        : prev.filter((name) => name !== commandName);
+      setIsUnrooted(newUnrootedMetrics.length > 0);
+      return newUnrootedMetrics;
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!isRooted && !isUnrooted) {
+      setError("Przynajmniej jedno z Rooted lub Unrooted musi być zaznaczone.");
+      return;
+    }
+    setError("");
+    setLoading(true);
 
     const Newick = {
       comparisionMode,
@@ -181,117 +173,87 @@ export function Form() {
       window.open("/metrics-viewer", "_blank");
     };
 
-    const runTreeCmp = (operationId) => {
-      console.log("Wywoływanie endpointu /run-treecmp");
-
-      const headers = {
-        "Content-Type": "application/json",
-      };
-
-      if (token) {
-        headers.Authorization = `Bearer ${token}`;
-      }
-
-      let url = "http://localhost:5244/api/Newick/run-treecmp";
-
+    const runTreeCmp = async (operationId) => {
+      let url = "/Newick/run-treecmp";
       if (operationId) {
         url += `?operationId=${operationId}`;
       }
-
-      fetch(url, {
-        method: "POST",
-        headers: headers,
-        body: JSON.stringify(Newick),
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          return response.json();
-        })
-        .then((data) => {
-          openPhyloViewerInNewTab();
-          openMetricsInNewTab(data.fileContent);
-        })
-        .catch((error) => {
-          console.error("Błąd podczas wywoływania /run-treecmp:", error);
-          alert(`Błąd: ${error.message}`);
-        });
+      try {
+        const response = await axiosInstance.post(url, Newick);
+        openPhyloViewerInNewTab();
+        openMetricsInNewTab(response.data.fileContent);
+      } catch (error) {
+        console.error("Error in /run-treecmp:", error);
+        alert(`Error: ${error.message}`);
+      } finally {
+        setLoading(false);
+        sessionStorage.removeItem("newickFirst");
+        sessionStorage.removeItem("newickSecond");
+        console.log("Newick strings cleared from session storage.");
+      }
     };
 
-    if (token) {
-      console.log("Token znaleziony. Wysyłanie do endpointu dla zalogowanych.");
-      fetch("http://localhost:5244/api/Newick", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(Newick),
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          return response.json();
-        })
-        .then((data) => {
-          console.log("Odpowiedź z serwera po pierwszym wywołaniu:", data);
-          const { operationId } = data;
-          runTreeCmp(operationId);
-        })
-        .catch((error) => {
-          console.error(
-            "Błąd podczas wywoływania pierwszego endpointu:",
-            error
-          );
-          alert(`Błąd: ${error.message}`);
+    try {
+      if (token) {
+        const response = await axiosInstance.post("/Newick/newick-db", Newick, {
+          headers: { Authorization: `Bearer ${token}` },
         });
-    } else {
-      console.log(
-        "Token nie znaleziony. Wysyłanie bez tokenu do endpointu dla niezalogowanych."
-      );
-      runTreeCmp();
+        const { operationId } = response.data;
+        runTreeCmp(operationId);
+      } else {
+        runTreeCmp();
+      }
+    } catch (error) {
+      console.error("Error in /newick-db:", error);
+      alert(`Error: ${error.message}`);
+      setLoading(false);
     }
   };
 
   return (
     <>
+      {loading && <LoadingAnimation />}
       <form onSubmit={handleSubmit}>
-        <Tree
-          checked={comparisionMode}
-          setcomparisionMode={setComparisionMode}
-          newickFirstString={newickFirstString}
-          setnewickFirstString={setNewickFirstString}
-          newickSecondString={newickSecondString}
-          setnewickSecondString={setNewickSecondString}
-          onInputChange={setWindowWidth}
-          setNormalizedDistances={setNormalizedDistances}
-          setPruneTrees={setPruneTrees}
-          setIncludeSummary={setIncludeSummary}
-          setZeroWeightsAllowed={setZeroWeightsAllowed}
-          setBifurcatingTreesOnly={setBifurcatingTreesOnly}
-        />
-        <RootedMetrics
-          metrics={rootedMetrics}
-          onCommandChange={handleRootedChange}
-        />
-        <UnrootedMetrics
-          metrics={unrootedMetrics}
-          onCommandChange={handleUnrootedChange}
-        />
-        <Other
-          normalizedDistances={normalizedDistances}
-          pruneTrees={pruneTrees}
-          includeSummary={includeSummary}
-          zeroWeightsAllowed={zeroWeightsAllowed}
-          bifurcatingTreesOnly={bifurcatingTreesOnly}
-          onOptionChange={handleOtherCheckboxChange}
-        />
+        <div className={styles.formSection}>
+          <Tree
+            checked={comparisionMode}
+            setcomparisionMode={setComparisionMode}
+            newickFirstString={newickFirstString}
+            setnewickFirstString={setNewickFirstString}
+            newickSecondString={newickSecondString}
+            setnewickSecondString={setNewickSecondString}
+            onInputChange={setWindowWidth}
+            setNormalizedDistances={setNormalizedDistances}
+            setPruneTrees={setPruneTrees}
+            setIncludeSummary={setIncludeSummary}
+            setZeroWeightsAllowed={setZeroWeightsAllowed}
+            setBifurcatingTreesOnly={setBifurcatingTreesOnly}
+          />
+        </div>
+        <div className={styles.formSection}>
+          <RootedMetrics
+            metrics={rootedMetrics}
+            onCommandChange={handleRootedChange}
+          />
+        </div>
+        <div className={styles.formSection}>
+          <UnrootedMetrics
+            metrics={unrootedMetrics}
+            onCommandChange={handleUnrootedChange}
+          />
+        </div>
+        <div className={styles.formSection}>
+          <Other
+            normalizedDistances={normalizedDistances}
+            pruneTrees={pruneTrees}
+            includeSummary={includeSummary}
+            zeroWeightsAllowed={zeroWeightsAllowed}
+            bifurcatingTreesOnly={bifurcatingTreesOnly}
+            onOptionChange={handleOtherCheckboxChange}
+          />
+        </div>
+        <ErrorMessage message={error} />{" "}
         <Button type="submit" onClick={handleSubmit} />
-        <button type="button" onClick={resetForm}>
-          Resetuj formularz
-        </button>{" "}
       </form>
     </>
   );

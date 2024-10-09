@@ -1,27 +1,29 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap");
+
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 2rem;
-  background-color: #ffffff;
-  box-shadow: 0px 30px 60px 0px rgba(61, 108, 236, 0.15);
+  background: linear-gradient(90deg, #ffffff, #f0f4ff);
+  box-shadow: 0px 4px 8px rgba(61, 108, 236, 0.1);
   padding: 0 2rem;
   margin-bottom: 20px;
   height: 60px;
   border-radius: 8px;
+  font-family: "Roboto", sans-serif;
 }
 
 .list_container {
   display: flex;
-  flex-direction: row;
   align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .list {
   list-style: none;
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
   align-items: center;
   padding: 0;
   margin: 0;
@@ -38,13 +40,13 @@
 
 .item:hover {
   color: #3d6cec;
-  transform: scale(1.05);
+  transform: translateY(-2px);
 }
 
 .logoutButton {
-  padding: 10px 20px;
+  padding: 8px 18px;
   background-color: #3d6cec;
-  color: white;
+  color: #ffffff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -54,10 +56,69 @@
 
 .logoutButton:hover {
   background-color: #3354b8;
-  transform: scale(1.05);
+  transform: translateY(-2px);
 }
 
 .logoutButton:active {
   background-color: #2c4a9e;
   transform: scale(0.95);
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    padding: 0.5rem 1rem;
+    align-items: center;
+    height: auto;
+  }
+
+  .list_container {
+    width: 100%;
+    justify-content: center;
+    padding-bottom: 0.5rem;
+    gap: 1rem;
+  }
+
+  .list {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .item {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #333;
+  }
+
+  .logoutButton {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    padding: 0.5rem;
+  }
+
+  .list_container,
+  .list {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .item {
+    font-size: 0.9rem;
+  }
+
+  .logoutButton {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    width: 80%; /* Make button span more space */
+    text-align: center;
+  }
 }

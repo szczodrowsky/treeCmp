@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "../../../services/axiosInstance";
 import "./NewicksList.css";
 
 export function NewicksList() {
@@ -11,38 +12,14 @@ export function NewicksList() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = localStorage.getItem("token");
-
-        const headers = {
-          "Content-Type": "application/json",
-        };
-
-        if (token) {
-          headers.Authorization = `Bearer ${token}`;
-        }
-
-        const response = await fetch(
-          "http://localhost:5244/api/Newick/InputData",
-          {
-            method: "GET",
-            headers: headers,
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error(
-            `Failed to fetch data: ${response.status} ${response.statusText}`
-          );
-        }
-
-        const data = await response.json();
-        setNewicks(data);
+        const response = await axiosInstance.get("/Newick/InputData");
+        setNewicks(response.data);
+        console.log(response.data);
       } catch (err) {
         setError(err.message);
         console.error("Error fetching data:", err);
       }
     };
-
     fetchData();
   }, []);
 
@@ -68,6 +45,7 @@ export function NewicksList() {
       <table>
         <thead>
           <tr>
+            <th>Date</th>
             <th>Comparision Mode</th>
             <th>Newick First String</th>
             <th>Newick Second String</th>
@@ -85,6 +63,7 @@ export function NewicksList() {
         <tbody>
           {newicks.map((newick, index) => (
             <tr key={index}>
+              <td>{new Date(newick.timestamp).toLocaleString()}</td>
               <td>{newick.comparisionMode}</td>
               <td>
                 <div

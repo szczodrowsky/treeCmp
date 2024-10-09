@@ -1,39 +1,29 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import axiosInstance from "../../services/axiosInstance";
 
 function ConfirmEmailPage() {
   const { userId, token } = useParams();
-  const [statusMessage, setStatusMessage] = useState(
-    "Potwierdzanie e-maila..."
-  );
+  const [statusMessage, setStatusMessage] = useState("Email confirmation...");
   const [isSuccess, setIsSuccess] = useState(null);
 
   useEffect(() => {
     const confirmEmail = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:5244/api/Auth/ConfirmEmail?userId=${userId}&token=${encodeURIComponent(
-            token
-          )}`,
-          { method: "GET" }
-        );
+        const response = await axiosInstance.get(`/Auth/ConfirmEmail`, {
+          params: {
+            userId,
+            token: encodeURIComponent(token),
+          },
+        });
 
-        if (response.ok) {
-          const data = await response.json();
-          setStatusMessage(data.message);
-          setIsSuccess(true);
-        } else {
-          const errorData = await response.json();
-          setStatusMessage(
-            errorData.message ||
-              "Wystąpił problem podczas potwierdzania e-maila."
-          );
-          setIsSuccess(false);
-        }
+        setStatusMessage(response.data.message);
+        setIsSuccess(true);
       } catch (error) {
-        setStatusMessage(
-          "Błąd połączenia z serwerem. Spróbuj ponownie później."
-        );
+        const errorMessage =
+          error.response?.data?.message ||
+          "There was a problem when confirming an email.";
+        setStatusMessage(errorMessage);
         setIsSuccess(false);
       }
     };
