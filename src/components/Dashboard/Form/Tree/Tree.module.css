@@ -87,7 +87,7 @@
 }
 
 .single-area {
-  max-width: 100% !important;
+  max-width: 70% !important;
 }
 
 .inputPart {
@@ -107,7 +107,6 @@
 }
 
 textarea {
-  resize: vertical;
   padding: 0.5rem;
   border: 1px solid #ccc;
   border-radius: var(--border-radius);

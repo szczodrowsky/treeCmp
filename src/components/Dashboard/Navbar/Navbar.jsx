@@ -45,7 +45,7 @@ export function Navbar() {
                 to="/dashboard/newicks"
                 className={({ isActive }) => (isActive ? styles.active : "")}
               >
-                Newick List
+                Forms History
               </NavLink>
             </li>
           )}
@@ -55,7 +55,7 @@ export function Navbar() {
                 to="/dashboard/results"
                 className={({ isActive }) => (isActive ? styles.active : "")}
               >
-                Wyniki
+                Result History
               </NavLink>
             </li>
           )}
@@ -64,13 +64,13 @@ export function Navbar() {
       {isAuthenticated ? (
         <div className={`${styles.list_container} ${styles.icon}`}>
           <button onClick={handleLogout} className={styles.logoutButton}>
-            Wyloguj
+            Log out
           </button>
         </div>
       ) : (
         <div className={`${styles.list_container} ${styles.icon}`}>
           <button onClick={handleReturnToHome} className={styles.logoutButton}>
-            Powróć na stronę główną
+            Main Page
           </button>
         </div>
       )}

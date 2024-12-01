@@ -18,11 +18,12 @@ function ResendConfirmationPage() {
       });
 
       setStatusMessage(
-        response.data.message || "Link potwierdzający został wysłany."
+        response.data.message || "The confirmation link has been sent."
       );
     } catch (error) {
       const errorMessage =
-        error.response?.data?.message || "Wystąpił problem. Spróbuj ponownie.";
+        error.response?.data?.message ||
+        "A problem has occurred. Please try again.";
       setStatusMessage(errorMessage);
     } finally {
       setIsLoading(false);
@@ -31,14 +32,14 @@ function ResendConfirmationPage() {
 
   return (
     <div className="resend-confirmation-container">
-      <h2>Wysyłanie potwierdzenia konta</h2>
+      <h2>Resend registration confirmation link</h2>
       <form
         onSubmit={handleResendConfirmation}
         className="resend-confirmation-form"
       >
         <input
           type="email"
-          placeholder="Twój e-mail"
+          placeholder="Your e-mail"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -49,7 +50,7 @@ function ResendConfirmationPage() {
           className="resend-confirmation-button"
           disabled={isLoading}
         >
-          {isLoading ? "Wysyłanie..." : "Wyślij ponownie link potwierdzający"}
+          {isLoading ? "Sending..." : "Resend confirmation link"}
         </button>
       </form>
       {statusMessage && (

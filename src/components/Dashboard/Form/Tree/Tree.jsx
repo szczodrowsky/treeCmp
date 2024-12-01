@@ -16,10 +16,10 @@ export function Tree({
   setNormalizedDistances,
 }) {
   const radioButtonsFunctions = [
-    { name: "Overlapping pair comparison", id: "rbOverlapping", value: "-s" },
-    { name: "Window comparison", id: "rbWindow", value: "-w" },
-    { name: "Matrix comparison", id: "rbMatrix", value: "-m" },
-    { name: "Ref-to-all comparison", id: "rbRefToAll", value: "-r" },
+    { name: " Overlapping pair comparison", id: "rbOverlapping", value: "-s" },
+    { name: " Window comparison", id: "rbWindow", value: "-w" },
+    { name: " Matrix comparison", id: "rbMatrix", value: "-m" },
+    { name: " Ref-to-all comparison", id: "rbRefToAll", value: "-r" },
   ];
 
   const [windowWidth, setwindowWidth] = useState("");
@@ -212,7 +212,7 @@ export function Tree({
           <textarea
             name="tree1"
             id="tree1"
-            cols="30"
+            cols="10"
             rows="10"
             placeholder="Paste or drag Newick tree"
             value={newickFirstString}
@@ -240,7 +240,7 @@ export function Tree({
             <textarea
               name="tree2"
               id="tree2"
-              cols="30"
+              cols="10"
               rows="10"
               placeholder="Paste or drag Newick tree"
               value={newickSecondString}

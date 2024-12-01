@@ -78,7 +78,7 @@ export function NewicksList() {
                     className="expand-button"
                     onClick={() => toggleRow(index)}
                   >
-                    {expandedRows[index] ? "Zwiń" : "Rozwiń"}
+                    {expandedRows[index] ? "Hide" : "Show"}
                   </button>
                 )}
               </td>
@@ -95,7 +95,7 @@ export function NewicksList() {
                     className="expand-button"
                     onClick={() => toggleRow(index)}
                   >
-                    {expandedRows[index] ? "Zwiń" : "Rozwiń"}
+                    {expandedRows[index] ? "Hide" : "Show"}
                   </button>
                 )}
               </td>

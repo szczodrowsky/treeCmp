@@ -64,7 +64,12 @@
   background-color: #218838;
   transform: translateY(-2px);
 }
-
+.error-message {
+  color: red;
+  margin-bottom: 10px;
+  font-size: 14px;
+  text-align: center;
+}
 .forgot-password-button {
   width: 100%;
   padding: 12px;

@@ -33,7 +33,7 @@ function ConfirmEmailPage() {
 
   return (
     <div style={{ textAlign: "center", padding: "20px" }}>
-      <h2>Potwierdzenie E-maila</h2>
+      <h2>E-mail confirmation</h2>
       <p style={{ color: isSuccess ? "green" : "red" }}>{statusMessage}</p>
     </div>
   );

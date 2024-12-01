@@ -7,11 +7,14 @@ import "./LoginForm.css";
 function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
   const { setAuth } = useContext(AuthContext);
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Zatrzymuje domyślne odświeżenie formularza
+    e.preventDefault();
+    setErrorMessage("");
+
     try {
       const response = await axios.post(
         "http://localhost:5244/api/Auth/Login",
@@ -24,7 +27,6 @@ function LoginForm() {
         }
       );
 
-      // Odbieramy dane z serwera
       const data = response.data;
       console.log("Full server response:", data);
 
@@ -33,15 +35,15 @@ function LoginForm() {
 
       if (token) {
         localStorage.setItem("token", token);
-        setAuth(data.user); // Ustawia stan autoryzacji bez przeładowania
-        navigate("/dashboard"); // Przekierowanie do dashboardu
+        setAuth(data.user);
+        navigate("/dashboard");
       } else {
         console.error("JWT token not found in response.");
-        alert("JWT token not found. Please try again.");
+        setErrorMessage("JWT token not found. Please try again.");
       }
     } catch (error) {
       console.error("Login error:", error);
-      alert("Invalid login credentials.");
+      setErrorMessage("Invalid email or password. Please try again."); // Ustaw komunikat o błędzie
     }
   };
 
@@ -61,8 +63,13 @@ function LoginForm() {
     <div className="login-container">
       <form onSubmit={handleSubmit} className="login-form">
         <h2>Login</h2>
+        {errorMessage && (
+          <div className="error-message">{errorMessage}</div>
+        )}{" "}
+        {/* Wyświetlanie błędu */}
         <input
           type="email"
+          id="username"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
@@ -70,6 +77,7 @@ function LoginForm() {
         />
         <input
           type="password"
+          id="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
@@ -78,6 +86,7 @@ function LoginForm() {
         <button type="submit">Log In</button>
         <button
           type="button"
+          id="submit"
           onClick={handleForgotPassword}
           className="forgot-password-button"
         >
